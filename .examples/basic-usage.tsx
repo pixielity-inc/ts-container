@@ -1,7 +1,7 @@
 /**
  * Basic Usage Example
  *
- * This example demonstrates the basic usage of @pixielity/react-di
+ * This example demonstrates the basic usage of @abdokouta/react-di
  */
 
 import { useEffect } from "react";
@@ -9,7 +9,7 @@ import {
   Module,
   Injectable,
   Inject,
-  Inversiland,
+  ContainerProvider,
   useInject,
 } from "../src/index";
 
@@ -46,7 +46,7 @@ class AppModule {}
 
 // 4. Use in React components
 function UserList() {
-  const userService = useInject(UserService, AppModule);
+  const userService = useInject(UserService);
   const users = userService.getUsers();
 
   return (
@@ -61,16 +61,17 @@ function UserList() {
   );
 }
 
-// 5. Initialize and render
+// 5. Wrap with ContainerProvider
 export function App() {
-  useEffect(() => {
-    // Initialize Inversiland with configuration
-    Inversiland.options.logLevel = "debug";
-    Inversiland.options.defaultScope = "Singleton";
-
-    // Run the root module
-    Inversiland.run(AppModule);
-  }, []);
-
-  return <UserList />;
+  return (
+    <ContainerProvider
+      module={AppModule}
+      options={{
+        logLevel: "debug",
+        defaultScope: "Singleton",
+      }}
+    >
+      <UserList />
+    </ContainerProvider>
+  );
 }

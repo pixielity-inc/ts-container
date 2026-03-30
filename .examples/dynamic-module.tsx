@@ -5,15 +5,15 @@
  * using the forRoot pattern
  */
 
-import React from "react";
 import {
   Module,
   Injectable,
   Inject,
   forRoot,
   useInject,
+  ContainerProvider,
   type DynamicModule,
-} from "@pixielity/react-di";
+} from "@abdokouta/react-di";
 
 // 1. Define configuration token
 export const DATABASE_CONFIG = Symbol("DATABASE_CONFIG");
@@ -64,21 +64,24 @@ class DatabaseModule {
 })
 class AppModule {}
 
-// 5. Initialize and use in components
-import { Inversiland } from "@pixielity/react-di";
-
-// Initialize Inversiland
-Inversiland.options.logLevel = "debug";
-Inversiland.options.defaultScope = "Singleton";
-Inversiland.run(AppModule);
-
+// 5. Use in components with ContainerProvider
 function DatabaseStatus() {
-  const dbService = useInject(DatabaseService, AppModule);
+  const dbService = useInject(DatabaseService);
   const status = dbService.connect();
 
   return <div>Database Status: {status}</div>;
 }
 
 export function App() {
-  return <DatabaseStatus />;
+  return (
+    <ContainerProvider
+      module={AppModule}
+      options={{
+        logLevel: "debug",
+        defaultScope: "Singleton",
+      }}
+    >
+      <DatabaseStatus />
+    </ContainerProvider>
+  );
 }

@@ -45,6 +45,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\""
   },
   "dependencies": {
+    "@inversiland/inversify": "^6.1.5",
     "inversiland": "^0.6.2",
     "reflect-metadata": "^0.2.2"
   },

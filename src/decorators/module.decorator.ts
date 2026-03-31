@@ -1,5 +1,6 @@
-import { module } from "inversiland";
-import type { ModuleMetadata } from "@/types/module-metadata.type";
+import { module } from 'inversiland';
+
+import type { ModuleMetadataArg } from '@/types';
 
 /**
  * Module Decorator
@@ -15,7 +16,7 @@ import type { ModuleMetadata } from "@/types/module-metadata.type";
  *
  * @example
  * ```typescript
- * import { Module } from "@pixielity/react-di";
+ * import { Module } from "@abdokouta/react-di";
  *
  * @Module({
  *   imports: [CommonModule],
@@ -27,6 +28,6 @@ import type { ModuleMetadata } from "@/types/module-metadata.type";
  *
  * @public
  */
-export const Module = (metadata: ModuleMetadata): ClassDecorator => {
+export const Module = (metadata: ModuleMetadataArg = {}): ClassDecorator => {
   return module(metadata) as ClassDecorator;
 };

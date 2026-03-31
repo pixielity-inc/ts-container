@@ -10,7 +10,7 @@
 import { useMemo } from "react";
 import { getModuleContainer } from "inversiland";
 import type { Newable } from "inversiland";
-import type { ServiceIdentifier } from "@/types/provider.type";
+import type { ServiceIdentifier } from "../../types";
 import { useContainer } from "../use-container";
 
 /**

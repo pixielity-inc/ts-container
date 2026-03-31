@@ -4,9 +4,8 @@
  * @description
  * Controls the verbosity of logging output.
  *
- * - debug: All messages including debug information
- * - info: Informational messages and above
- * - warn: Warning messages and above
- * - error: Only error messages
+ * - none: No logging
+ * - info: Informational messages
+ * - debug: Debug messages and above
  */
-export type LogLevel = "debug" | "info" | "warn" | "error";
+export type LogLevel = "none" | "info" | "debug";

@@ -530,7 +530,21 @@ export class PackageModule {
 
 ## 📝 Index File Pattern
 
-Every folder with multiple files MUST have an `index.ts` that re-exports the public API:
+Every folder with multiple files MUST have an `index.ts` that re-exports the public API.
+
+### Index File Types
+
+There are two types of index files:
+
+1. **Main Folder Index Files** - Located at the root of major folders (e.g., `src/interfaces/index.ts`, `src/types/index.ts`, `src/decorators/index.ts`)
+   - MUST have full docblock with `@fileoverview`, `@module`, and `@category`
+   - MUST use section headers with `// ============================================================================`
+   - MUST group exports by category
+
+2. **Sub-Folder Index Files** - Located in nested folders (e.g., `src/hooks/use-inject/index.ts`)
+   - MUST have simple docblock with `@fileoverview`, `@module`, and `@category`
+   - NO section headers needed
+   - Simple re-exports only
 
 ### Root index.ts Pattern
 
@@ -596,6 +610,11 @@ export type { MyType } from './types';
 export { MyEnum } from './enums';
 
 // ============================================================================
+// Configuration
+// ============================================================================
+export { DEFAULT_CONFIG } from './config';
+
+// ============================================================================
 // Constants
 // ============================================================================
 export { MY_CONSTANT } from './constants';
@@ -606,11 +625,64 @@ export { MY_CONSTANT } from './constants';
 export { myUtil } from './utils';
 ```
 
+### Main Folder Index Pattern
+
+```typescript
+/**
+ * @fileoverview Interfaces Index
+ * 
+ * Re-exports all interface definitions.
+ * 
+ * @module @pixielity/{package-name}
+ * @category Interfaces
+ */
+
+// ============================================================================
+// Module Configuration Interfaces
+// ============================================================================
+export type { IContainerConfig } from "./container-config.interface";
+export type { IModuleOptions } from "./module-options.interface";
+export type { IModuleAsyncOptions } from "./module-async-options.interface";
+
+// ============================================================================
+// Lifecycle Interfaces
+// ============================================================================
+export type { OnModuleInit, OnModuleDestroy } from "./lifecycle.interface";
+export { hasOnModuleInit, hasOnModuleDestroy } from "./lifecycle.interface";
+
+// ============================================================================
+// Component Interfaces
+// ============================================================================
+export type { ContainerProviderProps } from "./container-provider-props.interface";
+```
+
+### Sub-Folder Index Pattern
+
+```typescript
+/**
+ * @fileoverview useInject Hook
+ * 
+ * Re-exports the useInject hook.
+ * 
+ * @module @pixielity/{package-name}
+ * @category Hooks
+ */
+
+export { useInject } from "./use-inject.hook";
+```
+
 **Key Points:**
-- Group exports by category with comment headers
+- Group exports by category with comment headers in main folder index files
 - Export both classes and their interfaces
 - Export decorators from registries
 - Maintain consistent ordering across packages
+- Use relative imports (e.g., `"../types"`) instead of path aliases (e.g., `"@/types"`)
+- Sub-folder index files should be simple with just a docblock and exports
+
+**Import Path Rules:**
+- NEVER use path aliases like `@/types/service-identifier.type` in source files
+- ALWAYS use relative imports like `"../types"` or `"../../types"`
+- Import from the folder's index file, not individual files (e.g., `from "../types"` not `from "../types/service-identifier.type"`)
 
 ---
 

@@ -1,12 +1,15 @@
-import { Injectable, Inject } from '@abdokouta/react-di';
+import { Injectable, Inject, type OnModuleInit, type OnModuleDestroy } from '@abdokouta/react-di';
 import { LoggerService } from './logger.service';
 
 /**
  * Service with lifecycle hooks demonstration
  * Shows initialization and cleanup patterns
+ * 
+ * Implements OnModuleInit and OnModuleDestroy interfaces
+ * These methods are called by the module's onActivation and onDeactivation hooks
  */
 @Injectable()
-export class LifecycleService {
+export class LifecycleService implements OnModuleInit, OnModuleDestroy {
   private isInitialized = false;
   private resources: string[] = [];
   private cleanupCallbacks: Array<() => void> = [];
@@ -16,11 +19,12 @@ export class LifecycleService {
   }
 
   /**
-   * Initialization hook - called after construction
+   * OnModuleInit implementation
+   * Called by module's onActivation hook after construction
    * Use for async setup, resource allocation, etc.
    */
-  async onInit(): Promise<void> {
-    this.logger.info('LifecycleService.onInit() - Initializing resources...');
+  async onModuleInit(): Promise<void> {
+    this.logger.info('LifecycleService.onModuleInit() - Initializing resources...');
 
     // Simulate async initialization
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -30,15 +34,16 @@ export class LifecycleService {
     this.resources.push('Message Queue');
 
     this.isInitialized = true;
-    this.logger.info('LifecycleService.onInit() - Initialization complete');
+    this.logger.info('LifecycleService.onModuleInit() - Initialization complete');
   }
 
   /**
-   * Cleanup hook - called before service destruction
+   * OnModuleDestroy implementation
+   * Called by module's onDeactivation hook before destruction
    * Use for cleanup, closing connections, etc.
    */
-  onDestroy(): void {
-    this.logger.info('LifecycleService.onDestroy() - Cleaning up resources...');
+  onModuleDestroy(): void {
+    this.logger.info('LifecycleService.onModuleDestroy() - Cleaning up resources...');
 
     // Clean up resources
     this.resources.forEach((resource) => {
@@ -50,7 +55,7 @@ export class LifecycleService {
 
     this.resources = [];
     this.isInitialized = false;
-    this.logger.info('LifecycleService.onDestroy() - Cleanup complete');
+    this.logger.info('LifecycleService.onModuleDestroy() - Cleanup complete');
   }
 
   getStatus(): { initialized: boolean; resources: string[] } {

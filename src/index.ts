@@ -1,5 +1,5 @@
 /**
- * @pixielity/react-di
+ * @abdokouta/react-di
  *
  * Dependency injection container for React with NestJS-style modules.
  * Built on top of Inversiland for powerful, type-safe dependency injection
@@ -8,7 +8,7 @@
  * @example
  * Basic module and service setup:
  * ```typescript
- * import { Module, Injectable, Inject } from '@pixielity/react-di';
+ * import { Module, Injectable, Inject } from '@abdokouta/react-di';
  * import 'reflect-metadata';
  *
  * @Injectable()
@@ -37,14 +37,14 @@
  * @example
  * Using in React components:
  * ```typescript
- * import { ModuleProvider, useInject } from '@pixielity/react-di';
+ * import { ContainerProvider, useInject } from '@abdokouta/react-di';
  * import { AppModule } from './app.module';
  *
  * function App() {
  *   return (
- *     <ModuleProvider module={AppModule}>
+ *     <ContainerProvider module={AppModule}>
  *       <UserComponent />
- *     </ModuleProvider>
+ *     </ContainerProvider>
  *   );
  * }
  *
@@ -69,7 +69,7 @@
  * export class AppModule {}
  * ```
  *
- * @module @pixielity/react-di
+ * @module @abdokouta/react-di
  */
 
 import "reflect-metadata";
@@ -91,36 +91,58 @@ export {
 } from "./decorators";
 
 // ============================================================================
-// Types
+// Types (from Inversiland)
 // ============================================================================
 export type {
-  ModuleMetadata,
-  DynamicModule,
-  Provider,
-  ClassProvider,
-  ValueProvider,
-  FactoryProvider,
-  AsyncFactoryProvider,
-  ExistingProvider,
-  ServiceIdentifier,
+  // Core Types
   Newable,
+  NewableModule,
+  DynamicModule,
   ModuleContainer,
+  ServiceIdentifier,
+  
+  // Provider Types (use Provider union type from Inversiland)
+  Provider,
+  
+  // Module Types
+  ModuleMetadataArg,
+  ExportedProvider,
+  DetailedExportedProvider,
+  
+  // Factory Types
+  Factory,
+  AsyncFactory,
+  FactoryWrapper,
+  AsyncFactoryWrapper,
+  
+  // Custom Types
   Scope,
   LogLevel,
+} from "./types";
+
+// ============================================================================
+// Interfaces (Custom)
+// ============================================================================
+export type {
+  IContainerConfig,
   IModuleOptions,
   IModuleAsyncOptions,
-} from "./types";
+  OnModuleInit,
+  OnModuleDestroy,
+  ContainerProviderProps,
+} from "./interfaces";
+
+export { hasOnModuleInit, hasOnModuleDestroy } from "./interfaces";
 
 // ============================================================================
 // React Hooks
 // ============================================================================
-export { useInject, useModule } from "./hooks";
+export { useInject, useModule, useContainer } from "./hooks";
 
 // ============================================================================
-// React Context & Provider
+// React Providers
 // ============================================================================
-export { ContainerProvider } from "./providers/container.provider";
-export type { ContainerProviderProps } from "./providers/container.provider";
+export { ContainerProvider } from "./providers";
 
 // ============================================================================
 // Utilities
@@ -131,3 +153,9 @@ export { createModuleFactory, forRoot, forFeature } from "./utils";
 // Constants
 // ============================================================================
 export { METADATA_KEYS, DEFAULTS } from "./constants";
+
+// ============================================================================
+// React Contexts
+// ============================================================================
+export { ContainerContext } from "./contexts";
+export type { ContainerContextValue } from "./contexts";

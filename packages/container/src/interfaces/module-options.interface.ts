@@ -3,7 +3,7 @@
  *
  * Defines the standard interface for module configuration options.
  *
- * @module @pixielity/react-di
+ * @module @abdokouta/react-di
  * @category Interfaces
  */
 import type { IContainerConfig } from "./container-config.interface";
@@ -16,7 +16,7 @@ import type { IContainerConfig } from "./container-config.interface";
  *
  * @example
  * ```typescript
- * import { IModuleOptions } from '@pixielity/react-di';
+ * import { IModuleOptions } from '@abdokouta/react-di';
  *
  * export interface MyModuleOptions extends IModuleOptions {
  *   customOption: string;

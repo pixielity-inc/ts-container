@@ -9,7 +9,7 @@ import { injectable } from "inversiland";
  *
  * @example
  * ```typescript
- * import { Injectable, Inject } from "@pixielity/react-di";
+ * import { Injectable, Inject } from "@abdokouta/react-di";
  *
  * @Injectable()
  * export class UserService {

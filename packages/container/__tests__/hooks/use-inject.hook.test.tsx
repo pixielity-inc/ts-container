@@ -19,7 +19,7 @@
  * 4. Integrates with React's hook system
  * 5. Supports both class and token-based injection
  *
- * @module @pixielity/react-di
+ * @module @abdokouta/react-di
  * @category Tests
  * @see {@link useInject} - The hook being tested
  * @see {@link ContainerProvider} - Required context provider

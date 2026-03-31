@@ -3,7 +3,7 @@
  *
  * Props for the ContainerProvider component.
  *
- * @module @pixielity/react-di
+ * @module @abdokouta/react-di
  * @category Interfaces
  */
 import type { ReactNode } from "react";

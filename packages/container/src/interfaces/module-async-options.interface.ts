@@ -3,7 +3,7 @@
  *
  * Configuration options for modules that need async initialization.
  *
- * @module @pixielity/react-di
+ * @module @abdokouta/react-di
  * @category Interfaces
  */
 import type { IContainerConfig } from "./container-config.interface";
@@ -15,7 +15,7 @@ import type { IContainerConfig } from "./container-config.interface";
  *
  * @example
  * ```typescript
- * import { IModuleAsyncOptions } from '@pixielity/react-di';
+ * import { IModuleAsyncOptions } from '@abdokouta/react-di';
  *
  * export interface MyModuleAsyncOptions extends IModuleAsyncOptions<MyModuleOptions> {
  *   // Additional async-specific options

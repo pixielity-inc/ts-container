@@ -34,7 +34,7 @@
  * expect(element).toHaveClass('active');
  * ```
  *
- * @module @pixielity/react-di
+ * @module @abdokouta/react-di
  * @category Configuration
  * @see {@link https://vitest.dev/guide/} - Vitest documentation
  * @see {@link https://testing-library.com/docs/react-testing-library/intro/} - React Testing Library

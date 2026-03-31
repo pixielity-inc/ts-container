@@ -153,7 +153,7 @@ export { initContainer, type InitContainerOptions } from "./utils/init-container
 // ============================================================================
 // Builders
 // ============================================================================
-export { Container } from "./builders";
+export { Container } from "./container";
 
 // ============================================================================
 // Constants
@@ -170,3 +170,8 @@ export type { ContainerContextValue } from "./contexts";
 // InversifyJS / Inversiland Exports
 // ============================================================================
 export type { interfaces, DecoratorTarget } from "@inversiland/inversify";
+
+// ============================================================================
+// Inversiland Utilities (for Facades and external use)
+// ============================================================================
+export { getModuleContainer, Inversiland } from "inversiland";

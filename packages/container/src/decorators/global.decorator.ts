@@ -5,7 +5,7 @@
  * This decorator simplifies the syntax for creating global modules by automatically
  * marking all providers as global.
  *
- * @module @pixielity/react-di
+ * @module @abdokouta/react-di
  * @category Decorators
  */
 
@@ -31,7 +31,7 @@ import { makeProvidersGlobal } from "@/utils/global.util";
  *
  * @example Basic usage
  * ```typescript
- * import { Global, Module } from '@pixielity/react-di';
+ * import { Global, Module } from '@abdokouta/react-di';
  *
  * @Global()
  * @Module({
@@ -44,7 +44,7 @@ import { makeProvidersGlobal } from "@/utils/global.util";
  *
  * @example With dynamic module
  * ```typescript
- * import { Global, applyGlobalIfNeeded } from '@pixielity/react-di';
+ * import { Global, applyGlobalIfNeeded } from '@abdokouta/react-di';
  *
  * @Global()
  * @module({})

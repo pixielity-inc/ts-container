@@ -4,7 +4,7 @@
  * Provides utility functions for working with global modules and providers
  * in the inversiland DI system.
  *
- * @module @pixielity/react-di
+ * @module @abdokouta/react-di
  * @category Utils
  */
 
@@ -22,8 +22,8 @@ import { METADATA_KEYS } from "@/constants";
  *
  * @example
  * ```typescript
- * import { Global } from '@pixielity/react-di';
- * import { isGlobalModule } from '@pixielity/react-di';
+ * import { Global } from '@abdokouta/react-di';
+ * import { isGlobalModule } from '@abdokouta/react-di';
  *
  * @Global()
  * @module({})
@@ -67,7 +67,7 @@ export function isGlobalModule(target: any): boolean {
  *
  * @example Basic usage
  * ```typescript
- * import { makeProvidersGlobal } from '@pixielity/react-di';
+ * import { makeProvidersGlobal } from '@abdokouta/react-di';
  *
  * const providers = [
  *   { provide: ServiceA, useClass: ServiceA },
@@ -184,8 +184,8 @@ export function makeProvidersGlobal(providers: any[]): any[] {
  *
  * @example Standard usage in forRoot()
  * ```typescript
- * import { Global } from '@pixielity/react-di';
- * import { applyGlobalIfNeeded } from '@pixielity/react-di';
+ * import { Global } from '@abdokouta/react-di';
+ * import { applyGlobalIfNeeded } from '@abdokouta/react-di';
  *
  * @Global()
  * @module({})

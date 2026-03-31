@@ -62,7 +62,7 @@ The following deviations from the standard guide are acceptable for this package
 1. **No Module File**
    - **Reason:** This is a foundational DI container library, not a feature module
    - **Alternative:** Exports decorators and providers directly
-   - **Pattern:** Similar to `@pixielity/container` (the base package)
+   - **Pattern:** Similar to `@abdokouta/react-di` (the base package)
 
 2. **No Services Directory**
    - **Reason:** This package provides the DI infrastructure itself
@@ -83,7 +83,7 @@ The following deviations from the standard guide are acceptable for this package
 
 **Type:** Infrastructure Library (React DI Container)  
 **Category:** Core/Foundation  
-**Similar To:** `@pixielity/container`
+**Similar To:** `@abdokouta/react-di`
 
 This package provides foundational dependency injection infrastructure for React applications. It wraps and extends Inversiland with React-specific patterns (hooks, providers, contexts).
 

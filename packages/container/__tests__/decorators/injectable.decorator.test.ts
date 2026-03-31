@@ -18,7 +18,7 @@
  * the foundation for dependency injection in React applications. It uses reflect-metadata
  * to store type information that enables automatic dependency resolution.
  *
- * @module @pixielity/react-di
+ * @module @abdokouta/react-di
  * @category Tests
  * @see {@link Injectable} - The decorator being tested
  * @see {@link https://github.com/inversiland/inversiland} - Underlying DI framework

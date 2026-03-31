@@ -14,7 +14,7 @@ import type { Newable, ModuleContainer } from "inversiland";
  *
  * @example
  * ```typescript
- * import { useModule } from "@pixielity/react-di";
+ * import { useModule } from "@abdokouta/react-di";
  * import { AppModule } from "./app.module";
  *
  * function MyComponent() {

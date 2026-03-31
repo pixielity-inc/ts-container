@@ -38,7 +38,7 @@ import { useContainer } from "../use-container";
  * @example
  * ```typescript
  * // With ContainerProvider (recommended)
- * import { ContainerProvider, useInject } from "@pixielity/react-di";
+ * import { ContainerProvider, useInject } from "@abdokouta/react-di";
  * import { MyService } from "./my.service";
  * import { AppModule } from "./app.module";
  *
@@ -59,7 +59,7 @@ import { useContainer } from "../use-container";
  * @example
  * ```typescript
  * // Without ContainerProvider (legacy)
- * import { useInject } from "@pixielity/react-di";
+ * import { useInject } from "@abdokouta/react-di";
  * import { MyService } from "./my.service";
  * import { AppModule } from "./app.module";
  *

@@ -41,7 +41,7 @@ export default function IndexPage() {
           <div className="flex items-center gap-2 rounded-xl bg-surface shadow-surface px-4 py-2">
             <pre className="text-sm font-medium font-mono">
               npm install{" "}
-              <code className="px-2 py-1 h-fit font-mono font-normal inline whitespace-nowrap rounded-sm bg-accent/20 text-accent text-sm">
+              <code className="px-2 py-1 h-fit font-mono font-normal inline whitespace-nowrap rounded-sm bg-accent-soft-hover text-accent text-sm">
                 @abdokouta/react-di reflect-metadata
               </code>
             </pre>

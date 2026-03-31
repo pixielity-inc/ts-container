@@ -431,7 +431,7 @@ MIT License - See LICENSE file for details
 
 ---
 
-**Package**: @pixielity/react-di
+**Package**: @abdokouta/react-di
 **Version**: 1.0.0
 **Status**: Production Ready ✅
 **Last Updated**: March 29, 2026

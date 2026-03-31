@@ -398,7 +398,7 @@ export default defineConfig({
   minify: false,
   target: "es2020",
   platform: "neutral",
-  external: ["@pixielity/container", "react"],
+  external: ["@abdokouta/react-di", "react"],
   splitting: false,
   skipNodeModulesBundle: true,
   outExtension({ format }) {
@@ -746,7 +746,7 @@ src/
  * @fileoverview {ComponentType} Registry
  *
  * Centralized registry for managing {components} using BaseRegistry
- * from @pixielity/support for consistent registry API.
+ * from @abdokouta/support for consistent registry API.
  *
  * Key Features:
  * - Collection-based storage (O(1) operations)
@@ -754,12 +754,12 @@ src/
  * - Custom component support
  * - Type-safe component access
  *
- * @module @pixielity/{package-name}
+ * @module @abdokouta/{package-name}
  * @category Registries
  */
 
-import { BaseRegistry } from "@pixielity/support";
-import { Injectable } from "@pixielity/container";
+import { BaseRegistry } from "@abdokouta/support";
+import { Injectable } from "@abdokouta/react-di";
 import type { ComponentInterface } from "@/interfaces/component.interface";
 
 /**
@@ -769,8 +769,8 @@ import type { ComponentInterface } from "@/interfaces/component.interface";
  *
  * @example
  * ```typescript
- * import { useInject } from '@pixielity/container';
- * import { ComponentRegistryService } from '@pixielity/{package-name}';
+ * import { useInject } from '@abdokouta/react-di';
+ * import { ComponentRegistryService } from '@abdokouta/{package-name}';
  *
  * const registry = useInject(ComponentRegistryService);
  *
@@ -965,19 +965,19 @@ There are two types of index files:
 
 ````typescript
 /**
- * @pixielity/{package-name}
+ * @abdokouta/{package-name}
  *
  * Brief description of the package and its purpose.
  *
  * @example
  * Basic usage:
  * ```typescript
- * import { Service, useHook } from '@pixielity/{package-name}';
+ * import { Service, useHook } from '@abdokouta/{package-name}';
  *
  * // Usage example
  * ```
  *
- * @module @pixielity/{package-name}
+ * @module @abdokouta/{package-name}
  */
 
 // ============================================================================
@@ -1048,7 +1048,7 @@ export { myUtil } from "./utils";
  *
  * Re-exports all interface definitions.
  *
- * @module @pixielity/{package-name}
+ * @module @abdokouta/{package-name}
  * @category Interfaces
  */
 
@@ -1079,7 +1079,7 @@ export type { ContainerProviderProps } from "./container-provider-props.interfac
  *
  * Re-exports the useInject hook.
  *
- * @module @pixielity/{package-name}
+ * @module @abdokouta/{package-name}
  * @category Hooks
  */
 
@@ -1157,7 +1157,7 @@ describe("MyService", () => {
  *
  * Brief description of what the component does.
  *
- * @module @pixielity/{package-name}
+ * @module @abdokouta/{package-name}
  * @category Components
  */
 
@@ -1223,7 +1223,7 @@ export interface ComponentNameProps {
  *
  * Brief description of what the hook does.
  *
- * @module @pixielity/{package-name}
+ * @module @abdokouta/{package-name}
  * @category Hooks
  */
 
@@ -1303,11 +1303,11 @@ export interface UseHookNameReturn {
  *
  * Brief description of what the service does.
  *
- * @module @pixielity/{package-name}
+ * @module @abdokouta/{package-name}
  * @category Services
  */
 
-import { Injectable, Inject } from "@pixielity/container";
+import { Injectable, Inject } from "@abdokouta/react-di";
 import type { ServiceNameInterface } from "@/interfaces/service-name.interface";
 import { DEPENDENCY_TOKEN } from "@/constants/tokens.constant";
 
@@ -1366,7 +1366,7 @@ All packages that provide configurable functionality MUST follow this standard m
  *
  * @example Basic Usage
  * ```typescript
- * import { PackageModule } from '@pixielity/{package-name}';
+ * import { PackageModule } from '@abdokouta/{package-name}';
  *
  * @Module({
  *   imports: [PackageModule.forRoot()],
@@ -1376,7 +1376,7 @@ All packages that provide configurable functionality MUST follow this standard m
  *
  * @example With Configuration
  * ```typescript
- * import { PackageModule } from '@pixielity/{package-name}';
+ * import { PackageModule } from '@abdokouta/{package-name}';
  *
  * @Module({
  *   imports: [
@@ -1745,14 +1745,14 @@ export interface IComponentRegistrationOptions {
 Every package MUST have a comprehensive README.md with:
 
 ```markdown
-# @pixielity/{package-name}
+# @abdokouta/{package-name}
 
 Brief description of the package.
 
 ## Installation
 
 \`\`\`bash
-pnpm add @pixielity/{package-name}
+pnpm add @abdokouta/{package-name}
 \`\`\`
 
 ## Features
@@ -1766,7 +1766,7 @@ pnpm add @pixielity/{package-name}
 ### Basic Usage
 
 \`\`\`typescript
-import { Service } from '@pixielity/{package-name}';
+import { Service } from '@abdokouta/{package-name}';
 
 // Usage example
 \`\`\`
@@ -1956,7 +1956,7 @@ Then fill in the configuration files using the templates above.
 
 1. **Follow the Single Responsibility Principle** - Each file should have one clear purpose
 2. **Use the Standard Module Pattern** - All modules MUST follow the health.module.ts pattern with forRoot(), registerComponent(), and registerComponents() methods
-3. **Use Dependency Injection** - Leverage `@pixielity/container` for loose coupling
+3. **Use Dependency Injection** - Leverage `@abdokouta/react-di` for loose coupling
 4. **Write Tests First** - TDD approach ensures better code quality
 5. **Document Everything** - JSDoc comments with multiple examples help other developers understand your code
 6. **Use TypeScript Strictly** - Enable strict mode and avoid `any` types

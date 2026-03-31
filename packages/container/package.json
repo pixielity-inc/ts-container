@@ -1,8 +1,22 @@
 {
   "name": "@abdokouta/react-di",
-  "private": false,
   "version": "2.1.1",
   "description": "Dependency injection for React - NestJS-style modules powered by Inversiland",
+  "license": "MIT",
+  "author": {
+    "name": "Abdelrhman Kouta",
+    "email": "abdelrhman@pixielity.com",
+    "url": "https://github.com/abdokouta"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abdokouta/container.git",
+    "directory": "packages/container"
+  },
+  "bugs": {
+    "url": "https://github.com/abdokouta/container/issues"
+  },
+  "homepage": "https://github.com/abdokouta/container#readme",
   "keywords": [
     "react",
     "dependency-injection",
@@ -15,34 +29,38 @@
     "decorators",
     "nestjs-style"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/pixielity-inc/react-di.git"
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist",
+    "config",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
   ],
-  "license": "MIT",
-  "author": "Pixielity",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "clean": "rm -rf dist node_modules/.cache",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "check-types": "tsc --noEmit",
-    "clean": "rm -rf dist",
-    "test": "vitest --run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest --run --coverage",
-    "test:ui": "vitest --ui",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\""
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "pnpm run build",
+    "release": "pnpm publish --access public --no-git-checks"
   },
   "dependencies": {
     "@inversiland/inversify": "^6.1.5",
@@ -50,7 +68,7 @@
     "reflect-metadata": "^0.2.2"
   },
   "peerDependencies": {
-    "react": "^18.0.0"
+    "react": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@nesvel/eslint-config": "^1.0.5",
@@ -70,6 +88,12 @@
     "vitest": "^4.1.2"
   },
   "publishConfig": {
-    "access": "public"
-  }
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "sideEffects": false
 }

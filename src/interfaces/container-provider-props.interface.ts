@@ -1,14 +1,14 @@
 /**
  * @fileoverview Container Provider Props Interface
- * 
+ *
  * Props for the ContainerProvider component.
- * 
+ *
  * @module @pixielity/react-di
  * @category Interfaces
  */
-import type { ReactNode } from "react";
-import type { Newable } from "inversiland";
-import type { IModuleOptions } from "./module-options.interface";
+import type { ReactNode } from 'react';
+import type { Newable } from 'inversiland';
+import type { IModuleOptions } from './module-options.interface';
 
 /**
  * Props for ContainerProvider component

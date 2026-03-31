@@ -1,5 +1,5 @@
-import { multiInject } from "inversiland";
-import type { ServiceIdentifier } from "../types";
+import { multiInject } from 'inversiland';
+import type { ServiceIdentifier } from '../types';
 
 /**
  * MultiInject Decorator

@@ -1,9 +1,9 @@
 /**
  * Interface for services that need to perform initialization logic
  * after all dependencies have been injected.
- * 
+ *
  * Similar to NestJS's OnModuleInit interface.
- * 
+ *
  * @example
  * ```typescript
  * @Injectable()
@@ -25,9 +25,9 @@ export interface OnModuleInit {
 /**
  * Interface for services that need to perform cleanup logic
  * before the module is destroyed.
- * 
+ *
  * Similar to NestJS's OnModuleDestroy interface.
- * 
+ *
  * @example
  * ```typescript
  * @Injectable()

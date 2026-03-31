@@ -1,5 +1,5 @@
-import { injectProvided } from "inversiland";
-import type { ServiceIdentifier } from "../types";
+import { injectProvided } from 'inversiland';
+import type { ServiceIdentifier } from '../types';
 
 /**
  * Inject Provided Decorator

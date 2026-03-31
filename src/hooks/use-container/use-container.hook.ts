@@ -1,8 +1,8 @@
 /**
  * useContainer Hook
- * 
+ *
  * Hook to access the current container context.
- * 
+ *
  * @module hooks/use-container
  */
 
@@ -11,10 +11,10 @@ import { ContainerContext, type ContainerContextValue } from '@/contexts/contain
 
 /**
  * Hook to access the current container context
- * 
+ *
  * @returns Container context value
  * @throws Error if used outside of ContainerProvider
- * 
+ *
  * @example
  * ```typescript
  * function MyComponent() {
@@ -26,13 +26,13 @@ import { ContainerContext, type ContainerContextValue } from '@/contexts/contain
  */
 export function useContainer(): ContainerContextValue {
   const context = useContext(ContainerContext);
-  
+
   if (!context) {
     throw new Error(
       'useContainer must be used within a ContainerProvider. ' +
-      'Wrap your component tree with <ContainerProvider module={YourModule}>...</ContainerProvider>'
+        'Wrap your component tree with <ContainerProvider module={YourModule}>...</ContainerProvider>'
     );
   }
-  
+
   return context;
 }

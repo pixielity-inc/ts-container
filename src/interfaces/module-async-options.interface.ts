@@ -1,22 +1,22 @@
 /**
  * @fileoverview Async Module Options Interface
- * 
+ *
  * Configuration options for modules that need async initialization.
- * 
+ *
  * @module @pixielity/react-di
  * @category Interfaces
  */
-import type { IContainerConfig } from "./container-config.interface";
+import type { IContainerConfig } from './container-config.interface';
 
 /**
  * Async module options interface
- * 
+ *
  * Configuration options for modules that need async initialization.
- * 
+ *
  * @example
  * ```typescript
  * import { IModuleAsyncOptions } from '@pixielity/react-di';
- * 
+ *
  * export interface MyModuleAsyncOptions extends IModuleAsyncOptions<MyModuleOptions> {
  *   // Additional async-specific options
  * }
@@ -25,7 +25,7 @@ import type { IContainerConfig } from "./container-config.interface";
 export interface IModuleAsyncOptions<T = any> extends IContainerConfig {
   /**
    * Factory function to create module options
-   * 
+   *
    * Can be synchronous or asynchronous.
    */
   useFactory?: (...args: any[]) => Promise<T> | T;
@@ -42,7 +42,7 @@ export interface IModuleAsyncOptions<T = any> extends IContainerConfig {
 
   /**
    * Whether the module should be global
-   * 
+   *
    * @default false
    */
   isGlobal?: boolean;

@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { getModuleContainer } from "inversiland";
-import type { Newable, ModuleContainer } from "inversiland";
+import { useMemo } from 'react';
+import { getModuleContainer } from 'inversiland';
+import type { Newable, ModuleContainer } from 'inversiland';
 
 /**
  * React hook to access a module container

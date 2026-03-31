@@ -1,13 +1,13 @@
 /**
  * @fileoverview Types Index
- * 
+ *
  * Re-exports Inversiland types and defines type aliases for non-exported Inversiland types.
- * 
+ *
  * @module @abdokouta/react-di
  * @category Types
  */
 
-import type { Newable, DynamicModule, Provider } from "inversiland";
+import type { Newable, DynamicModule, Provider } from 'inversiland';
 
 // ============================================================================
 // Re-export Inversiland Types
@@ -22,13 +22,13 @@ export type {
   AsyncFactory,
   FactoryWrapper,
   AsyncFactoryWrapper,
-} from "inversiland";
+} from 'inversiland';
 
 // ============================================================================
 // Custom Types
 // ============================================================================
-export type { Scope } from "./scope.type";
-export type { LogLevel } from "./log-level.type";
+export type { Scope } from './scope.type';
+export type { LogLevel } from './log-level.type';
 
 // ============================================================================
 // Type Aliases for Non-Exported Inversiland Types
@@ -54,7 +54,9 @@ export type ModuleMetadataArg = {
  * Exported provider type
  * Matches Inversiland's internal ExportedProvider type
  */
-export type ExportedProvider<T = unknown> = ServiceIdentifier<T> | { provide: ServiceIdentifier<T>; deep?: boolean };
+export type ExportedProvider<T = unknown> =
+  | ServiceIdentifier<T>
+  | { provide: ServiceIdentifier<T>; deep?: boolean };
 
 /**
  * Detailed exported provider configuration

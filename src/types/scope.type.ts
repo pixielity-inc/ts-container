@@ -8,4 +8,4 @@
  * - Transient: New instance created for each injection
  * - Request: Single instance per request (useful for request-scoped data)
  */
-export type Scope = "Singleton" | "Transient" | "Request";
+export type Scope = 'Singleton' | 'Transient' | 'Request';

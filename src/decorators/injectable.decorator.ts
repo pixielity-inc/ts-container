@@ -1,4 +1,4 @@
-import { injectable } from "inversiland";
+import { injectable } from 'inversiland';
 
 /**
  * Injectable Decorator

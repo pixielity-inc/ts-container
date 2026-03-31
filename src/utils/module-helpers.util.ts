@@ -1,6 +1,6 @@
-import type { DynamicModule } from "inversiland";
-import type { Newable } from "inversiland";
-import type { ModuleMetadataArg } from "../types";
+import type { DynamicModule } from 'inversiland';
+import type { Newable } from 'inversiland';
+import type { ModuleMetadataArg } from '../types';
 
 /**
  * Helper for creating forRoot dynamic modules
@@ -36,7 +36,7 @@ import type { ModuleMetadataArg } from "../types";
  */
 export function forRoot(
   moduleClass: Newable,
-  metadata: Omit<ModuleMetadataArg, "module">
+  metadata: Omit<ModuleMetadataArg, 'module'>
 ): DynamicModule {
   return {
     module: moduleClass,
@@ -75,7 +75,7 @@ export function forRoot(
  */
 export function forFeature(
   moduleClass: Newable,
-  metadata: Omit<ModuleMetadataArg, "module">
+  metadata: Omit<ModuleMetadataArg, 'module'>
 ): DynamicModule {
   return {
     module: moduleClass,

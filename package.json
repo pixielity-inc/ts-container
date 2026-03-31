@@ -1,6 +1,6 @@
 {
   "name": "@abdokouta/react-di",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Dependency injection for React - NestJS-style modules powered by Inversiland",
   "keywords": [
     "react",
@@ -36,7 +36,9 @@
     "test:watch": "vitest",
     "test:coverage": "vitest --run --coverage",
     "test:ui": "vitest --ui",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\"",
+    "lint": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\""
   },
   "dependencies": {
     "inversiland": "^0.6.2",

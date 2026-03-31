@@ -1,4 +1,4 @@
-import { optional } from "inversiland";
+import { optional } from 'inversiland';
 
 /**
  * Optional Decorator

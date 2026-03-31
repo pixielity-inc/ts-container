@@ -1,6 +1,6 @@
-import type { DynamicModule } from "inversiland";
-import type { Newable } from "inversiland";
-import type { ModuleMetadataArg } from "../types";
+import type { DynamicModule } from 'inversiland';
+import type { Newable } from 'inversiland';
+import type { ModuleMetadataArg } from '../types';
 
 /**
  * Creates a module factory function
@@ -35,7 +35,7 @@ import type { ModuleMetadataArg } from "../types";
  */
 export function createModuleFactory(
   moduleClass: Newable,
-  metadata: Omit<ModuleMetadataArg, "module">
+  metadata: Omit<ModuleMetadataArg, 'module'>
 ): DynamicModule {
   return {
     module: moduleClass,

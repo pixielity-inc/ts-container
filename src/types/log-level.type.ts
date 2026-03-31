@@ -8,4 +8,4 @@
  * - info: Informational messages
  * - debug: Debug messages and above
  */
-export type LogLevel = "none" | "info" | "debug";
+export type LogLevel = 'none' | 'info' | 'debug';

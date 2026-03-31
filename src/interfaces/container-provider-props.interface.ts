@@ -20,7 +20,20 @@ export interface ContainerProviderProps {
   module: Newable;
 
   /**
-   * Configuration options
+   * Configuration options for the container
+   * 
+   * @example
+   * ```typescript
+   * <ContainerProvider 
+   *   module={AppModule}
+   *   options={{
+   *     logLevel: 'debug',
+   *     defaultScope: 'Singleton'
+   *   }}
+   * >
+   *   <App />
+   * </ContainerProvider>
+   * ```
    */
   options?: IModuleOptions;
 

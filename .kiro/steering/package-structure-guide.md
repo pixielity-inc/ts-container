@@ -336,6 +336,11 @@ coverage/
 *.log
 ```
 
+**Important Notes:**
+- `package-lock.json` MUST be committed to the repository (do NOT add it to .gitignore)
+- `pnpm-lock.yaml` should NOT be in the repository if using npm
+- The lockfile is required for `npm ci` to work in CI/CD pipelines
+
 ### 6. prettierrc.ts
 
 ```typescript

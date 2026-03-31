@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useInject } from '@abdokouta/react-di';
+import { useState, useEffect } from "react";
+import { useInject } from "@abdokouta/react-di";
 import {
   Card,
   Button,
@@ -12,12 +12,12 @@ import {
   TableRow,
   TableCell,
   Chip,
-} from '@heroui/react';
+} from "@heroui/react";
 
-import { CounterService } from '@/services/counter.service';
-import { UserService, type User } from '@/services/user.service';
-import DefaultLayout from '@/layouts/default';
-import { title } from '@/components/primitives';
+import { CounterService } from "@/services/counter.service";
+import { UserService, type User } from "@/services/user.service";
+import DefaultLayout from "@/layouts/default";
+import { title } from "@/components/primitives";
 
 export default function ContainerPage() {
   const counterService = useInject(CounterService);
@@ -25,8 +25,8 @@ export default function ContainerPage() {
 
   const [count, setCount] = useState(counterService.getCount());
   const [users, setUsers] = useState<User[]>(userService.getUsers());
-  const [newUserName, setNewUserName] = useState('');
-  const [newUserEmail, setNewUserEmail] = useState('');
+  const [newUserName, setNewUserName] = useState("");
+  const [newUserEmail, setNewUserEmail] = useState("");
 
   useEffect(() => {
     const unsubscribe = counterService.subscribe((newCount) => {
@@ -42,13 +42,13 @@ export default function ContainerPage() {
         id: Date.now().toString(),
         name: newUserName,
         email: newUserEmail,
-        role: 'User',
+        role: "User",
       };
 
       userService.addUser(newUser);
       setUsers(userService.getUsers());
-      setNewUserName('');
-      setNewUserEmail('');
+      setNewUserName("");
+      setNewUserEmail("");
     }
   };
 
@@ -72,12 +72,19 @@ export default function ContainerPage() {
               Demonstrates singleton service with reactive state management
             </p>
             <div className="flex items-center gap-4">
-              <Button onPress={() => counterService.decrement()}>Decrement</Button>
+              <Button onPress={() => counterService.decrement()}>
+                Decrement
+              </Button>
               <Chip color="accent" size="lg" variant="soft">
                 <Chip.Label>Count: {count}</Chip.Label>
               </Chip>
-              <Button onPress={() => counterService.increment()}>Increment</Button>
-              <Button variant="secondary" onPress={() => counterService.reset()}>
+              <Button onPress={() => counterService.increment()}>
+                Increment
+              </Button>
+              <Button
+                variant="secondary"
+                onPress={() => counterService.reset()}
+              >
                 Reset
               </Button>
             </div>
@@ -131,7 +138,7 @@ export default function ContainerPage() {
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
                       <Chip
-                        color={user.role === 'Admin' ? 'success' : 'default'}
+                        color={user.role === "Admin" ? "success" : "default"}
                         size="sm"
                         variant="soft"
                       >
@@ -139,7 +146,11 @@ export default function ContainerPage() {
                       </Chip>
                     </TableCell>
                     <TableCell>
-                      <Button size="sm" variant="danger" onPress={() => handleDeleteUser(user.id)}>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onPress={() => handleDeleteUser(user.id)}
+                      >
                         Delete
                       </Button>
                     </TableCell>

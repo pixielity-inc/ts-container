@@ -11,6 +11,8 @@ import { useMemo, type ReactNode } from 'react';
 import { getModuleContainer, Inversiland } from 'inversiland';
 import type { Newable } from 'inversiland';
 import { ContainerContext, type ContainerContextValue } from '@/contexts/container.context';
+import type { IModuleOptions } from '@/interfaces/module-options.interface';
+import { containerConfig } from '../../config/container.config';
 
 /**
  * Track initialized modules to prevent duplicate initialization
@@ -25,6 +27,11 @@ export interface ContainerProviderProps {
    * The module class to provide
    */
   module: Newable;
+
+  /**
+   * Configuration options
+   */
+  options?: IModuleOptions;
 
   /**
    * Child components
@@ -51,34 +58,66 @@ export interface ContainerProviderProps {
  *
  * function App() {
  *   return (
- *     <ContainerProvider module={AppModule}>
+ *     <ContainerProvider 
+ *       module={AppModule}
+ *       options={{
+ *         logLevel: 'debug',
+ *         defaultScope: 'Singleton'
+ *       }}
+ *     >
  *       <MyComponent />
  *     </ContainerProvider>
  *   );
  * }
  * ```
  */
-export function ContainerProvider({ module, children }: ContainerProviderProps) {
+export function ContainerProvider({ module, options, children }: ContainerProviderProps) {
+  // Merge provided options with defaults
+  const config = useMemo(() => ({
+    ...containerConfig,
+    ...options,
+  }), [options]);
+
   // Memoize container initialization to prevent multiple initializations in StrictMode
   const value = useMemo<ContainerContextValue>(() => {
-    console.log('[ContainerProvider] Initializing container for module:', module.name);
-    console.log('[ContainerProvider] Module already initialized?', initializedModules.has(module));
+    const logLevel = config.logLevel;
+    const shouldLog = logLevel !== 'none';
+
+    if (shouldLog) {
+      console.log('[ContainerProvider] Initializing container for module:', module.name);
+      console.log('[ContainerProvider] Config:', config);
+      console.log('[ContainerProvider] Module already initialized?', initializedModules.has(module));
+    }
 
     // Check if we've already initialized this module
     if (!initializedModules.has(module)) {
-      console.log('[ContainerProvider] First initialization - calling Inversiland.run()...');
+      // Configure Inversiland options before running
+      if (config.logLevel) {
+        (Inversiland.options as any).logLevel = config.logLevel;
+      }
+      if (config.defaultScope) {
+        (Inversiland.options as any).defaultScope = config.defaultScope;
+      }
+
+      if (shouldLog) {
+        console.log('[ContainerProvider] First initialization - calling Inversiland.run()...');
+      }
 
       try {
         Inversiland.run(module);
         initializedModules.add(module);
-        console.log('[ContainerProvider] ✓ Inversiland.run() completed successfully');
+        if (shouldLog) {
+          console.log('[ContainerProvider] ✓ Inversiland.run() completed successfully');
+        }
       } catch (runError: any) {
         // Check if error is "already running" - this is OK, means another instance initialized it
         if (
           runError?.message?.includes('already running') ||
           runError?.message?.includes('alreadyRunning')
         ) {
-          console.log('[ContainerProvider] Module already initialized by another instance');
+          if (shouldLog) {
+            console.log('[ContainerProvider] Module already initialized by another instance');
+          }
           initializedModules.add(module);
         } else {
           console.error('[ContainerProvider] ❌ Inversiland.run() failed:', runError);
@@ -86,31 +125,39 @@ export function ContainerProvider({ module, children }: ContainerProviderProps) 
         }
       }
     } else {
-      console.log('[ContainerProvider] Module already initialized, skipping Inversiland.run()');
+      if (shouldLog) {
+        console.log('[ContainerProvider] Module already initialized, skipping Inversiland.run()');
+      }
     }
 
     // Get the container (should exist now after Inversiland.run())
     let container;
     try {
       container = getModuleContainer(module);
-      console.log('[ContainerProvider] ✓ Container retrieved, ID:', container.innerContainer.id);
+      if (shouldLog) {
+        console.log('[ContainerProvider] ✓ Container retrieved, ID:', container.innerContainer.id);
+      }
     } catch (getError) {
       console.error('[ContainerProvider] ❌ Failed to get container:', getError);
       throw getError;
     }
 
-    console.log('[ContainerProvider] Container ready, ID:', container.innerContainer.id);
+    if (shouldLog) {
+      console.log('[ContainerProvider] Container ready, ID:', container.innerContainer.id);
+    }
 
     return {
       container,
       moduleClass: module,
     };
-  }, [module]);
+  }, [module, config]);
 
-  console.log('[ContainerProvider] Rendering with value:', {
-    containerId: value.container.innerContainer.id,
-    moduleClass: value.moduleClass.name,
-  });
+  if (config.logLevel !== 'none') {
+    console.log('[ContainerProvider] Rendering with value:', {
+      containerId: value.container.innerContainer.id,
+      moduleClass: value.moduleClass.name,
+    });
+  }
 
   return <ContainerContext.Provider value={value}>{children}</ContainerContext.Provider>;
 }

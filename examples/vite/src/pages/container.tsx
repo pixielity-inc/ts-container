@@ -129,7 +129,9 @@ export default function ContainerPage() {
                         <Table.Cell>{user.email}</Table.Cell>
                         <Table.Cell>
                           <Chip
-                            color={user.role === "Admin" ? "success" : "default"}
+                            color={
+                              user.role === "Admin" ? "success" : "default"
+                            }
                             size="sm"
                             variant="soft"
                           >

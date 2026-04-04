@@ -17,7 +17,7 @@ import type { ModuleMetadataArg } from "../types";
  * ```typescript
  * import { createModuleFactory } from "@refinedev/core-di";
  *
- * @module({})
+ * @Module({})
  * export class ConfigModule {
  *   static forRoot(config: AppConfig): DynamicModule {
  *     return createModuleFactory(ConfigModule, {

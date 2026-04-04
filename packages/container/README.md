@@ -72,7 +72,7 @@ Container
   .build();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <ContainerProvider module={AppModule}>
+  <ContainerProvider>
     <App />
   </ContainerProvider>
 );

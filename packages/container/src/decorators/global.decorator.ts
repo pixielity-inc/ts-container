@@ -9,6 +9,7 @@
  * @category Decorators
  */
 
+import "reflect-metadata";
 import { METADATA_KEYS } from "@/constants";
 import { makeProvidersGlobal } from "@/utils/global.util";
 
@@ -47,7 +48,7 @@ import { makeProvidersGlobal } from "@/utils/global.util";
  * import { Global, applyGlobalIfNeeded } from '@abdokouta/react-di';
  *
  * @Global()
- * @module({})
+ * @Module({})
  * export class LoggerModule {
  *   static forRoot(options: LoggerOptions) {
  *     const providers = [
@@ -66,41 +67,35 @@ import { makeProvidersGlobal } from "@/utils/global.util";
  * ```
  */
 export function Global(): ClassDecorator {
-  return function <T extends Function>(target: T): T {
-    // Mark the module as global using metadata
-    Reflect.defineMetadata(METADATA_KEYS.GLOBAL, true, target.prototype);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const R = Reflect as any;
+  return function (target: Function): void {
+    R.defineMetadata(METADATA_KEYS.GLOBAL, true, target.prototype);
 
-    // Since decorators execute bottom-to-top, @Module has already run and set metadata.
-    // We need to read the existing providers and move them to globalProviders.
     const existingProviders: any[] =
-      Reflect.getMetadata("providers", target.prototype) || [];
+      R.getMetadata("providers", target.prototype) || [];
     const existingGlobalProviders: any[] =
-      Reflect.getMetadata("globalProviders", target.prototype) || [];
+      R.getMetadata("globalProviders", target.prototype) || [];
 
     if (existingProviders.length > 0) {
-      // Convert all providers to global providers
       const newGlobalProviders = makeProvidersGlobal(existingProviders);
 
-      // Update metadata: move providers to globalProviders, clear providers
-      Reflect.defineMetadata("providers", [], target.prototype);
-      Reflect.defineMetadata(
+      R.defineMetadata("providers", [], target.prototype);
+      R.defineMetadata(
         "globalProviders",
         [...existingGlobalProviders, ...newGlobalProviders],
         target.prototype,
       );
 
-      // Global modules don't need exports - providers are available everywhere
-      Reflect.defineMetadata("exports", [], target.prototype);
+      R.defineMetadata("exports", [], target.prototype);
 
       console.log(
-        `[@Global] Moved ${existingProviders.length} providers to globalProviders for module: ${target.name}`,
+        `[@Global] Moved ${existingProviders.length} providers to globalProviders for module: ${(target as any).name}`,
       );
     } else {
       console.log(
-        `[@Global] No providers to move for module: ${target.name} (providers may be added via forRoot)`,
+        `[@Global] No providers to move for module: ${(target as any).name} (providers may be added via forRoot)`,
       );
     }
-
-    return target;
   };
 }

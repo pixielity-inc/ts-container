@@ -11,13 +11,15 @@
  * @module providers/container
  */
 
+import type { Newable } from "inversiland";
 import { useMemo, type ReactNode } from "react";
 import { getModuleContainer } from "inversiland";
-import type { Newable } from "inversiland";
+
 import {
   ContainerContext,
   type ContainerContextValue,
 } from "@/contexts/container.context";
+import { Container } from "@/container";
 
 /**
  * Container Provider Props
@@ -61,10 +63,15 @@ export interface ContainerProviderProps {
  * );
  * ```
  */
-export function ContainerProvider({
-  module,
-  children,
-}: ContainerProviderProps) {
+export function ContainerProvider({ children }: ContainerProviderProps) {
+  const module = Container.getModule();
+
+  if (!module) {
+    throw new Error(
+      "[ContainerProvider] No module found. Call Container.configure().withModule(YourModule).build() before rendering.",
+    );
+  }
+
   const value = useMemo<ContainerContextValue>(() => {
     const container = getModuleContainer(module);
     return {

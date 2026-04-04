@@ -26,12 +26,12 @@ import { METADATA_KEYS } from "@/constants";
  * import { isGlobalModule } from '@abdokouta/react-di';
  *
  * @Global()
- * @module({})
+ * @Module({})
  * class MyModule {}
  *
  * console.log(isGlobalModule(MyModule)); // true
  *
- * @module({})
+ * @Module({})
  * class RegularModule {}
  *
  * console.log(isGlobalModule(RegularModule)); // false
@@ -188,7 +188,7 @@ export function makeProvidersGlobal(providers: any[]): any[] {
  * import { applyGlobalIfNeeded } from '@abdokouta/react-di';
  *
  * @Global()
- * @module({})
+ * @Module({})
  * export class MyModule {
  *   static forRoot(options: ModuleOptions) {
  *     const providers = [
@@ -208,7 +208,7 @@ export function makeProvidersGlobal(providers: any[]): any[] {
  * @example With forRootAsync()
  * ```typescript
  * @Global()
- * @module({})
+ * @Module({})
  * export class ConfigModule {
  *   static forRootAsync(options: ConfigAsyncOptions) {
  *     const providers = [
@@ -231,7 +231,7 @@ export function makeProvidersGlobal(providers: any[]): any[] {
  *
  * @example Without @Global() decorator
  * ```typescript
- * @module({})
+ * @Module({})
  * export class RegularModule {
  *   static forRoot(options: ModuleOptions) {
  *     const providers = [
@@ -250,7 +250,7 @@ export function makeProvidersGlobal(providers: any[]): any[] {
  * @example Combining with conditional logic
  * ```typescript
  * @Global()
- * @module({})
+ * @Module({})
  * export class CacheModule {
  *   static forRoot(options: CacheOptions) {
  *     const providers = [

@@ -9,9 +9,9 @@
  */
 export const METADATA_KEYS = {
   MODULE: "di:module",
-  MODULE_NAME: "di:module:name",
   PROVIDER: "di:provider",
-  PROVIDER_NAME: "di:provider:name",
-  INJECTABLE: "di:injectable",
   GLOBAL: "di:global:module",
+  INJECTABLE: "di:injectable",
+  MODULE_NAME: "di:module:name",
+  PROVIDER_NAME: "di:provider:name",
 } as const;

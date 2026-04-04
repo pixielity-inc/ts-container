@@ -18,7 +18,7 @@ import { applyGlobalIfNeeded, isGlobalModule } from "./global.util";
  * ```typescript
  * import { forRoot } from "@refinedev/core-di";
  *
- * @module({})
+ * @Module({})
  * export class DatabaseModule {
  *   static forRoot(config: DatabaseConfig): DynamicModule {
  *     return forRoot(DatabaseModule, {
@@ -77,7 +77,7 @@ export function forRoot(
  * ```typescript
  * import { forFeature } from "@refinedev/core-di";
  *
- * @module({})
+ * @Module({})
  * export class RepositoryModule {
  *   static forFeature(entities: Newable[]): DynamicModule {
  *     return forFeature(RepositoryModule, {

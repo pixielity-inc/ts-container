@@ -1,0 +1,62 @@
+{
+  "files": {
+    "packages/container/dist/index.mjs": {
+      "size": 14780,
+      "mtime_nanos": 1774931822720843307,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/container/dist/index.d.mts": {
+      "size": 29855,
+      "mtime_nanos": 1774931823231737980,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/container/dist/index.d.ts": {
+      "size": 29855,
+      "mtime_nanos": 1774931823231738064,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/container/.turbo/turbo-build.log": {
+      "size": 1161,
+      "mtime_nanos": 1774931823248079901,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/container/dist/index.js": {
+      "size": 16673,
+      "mtime_nanos": 1774931822720921890,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/container/dist": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/container/dist/index.js.map": {
+      "size": 58913,
+      "mtime_nanos": 1774931822721769391,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/container/dist/index.mjs.map": {
+      "size": 58644,
+      "mtime_nanos": 1774931822721460557,
+      "mode": 420,
+      "is_dir": false
+    }
+  },
+  "order": [
+    "packages/container/.turbo/turbo-build.log",
+    "packages/container/dist",
+    "packages/container/dist/index.d.mts",
+    "packages/container/dist/index.d.ts",
+    "packages/container/dist/index.js",
+    "packages/container/dist/index.js.map",
+    "packages/container/dist/index.mjs",
+    "packages/container/dist/index.mjs.map"
+  ]
+}

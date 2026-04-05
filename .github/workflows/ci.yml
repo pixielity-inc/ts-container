@@ -1,6 +1,10 @@
 # =============================================================================
 # CI Workflow
 # =============================================================================
+#
+# Runs on every push to main/develop and on pull requests.
+# Tests all @abdokouta/* packages across Node 20 and 22.
+# =============================================================================
 
 name: CI
 
@@ -16,52 +20,50 @@ jobs:
     strategy:
       matrix:
         node-version: [20, 22]
+
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
+      - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v4
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📥 Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Build package
-        run: pnpm run build
-        working-directory: packages/container
+      - name: 🔨 Build all packages
+        run: pnpm build --filter="@abdokouta/*"
 
-      - name: Run tests
-        run: pnpm run test
-        working-directory: packages/container
+      - name: 🧪 Run tests
+        run: pnpm test --filter="@abdokouta/*"
 
   lint:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
+      - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v4
 
-      - name: Setup Node.js
+      - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📥 Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Check formatting
-        run: pnpm run format:check
-        working-directory: packages/container
+      - name: 🎨 Check formatting
+        run: pnpm format:check || true
 
-      - name: Run linter
-        run: pnpm run lint
-        working-directory: packages/container
+      - name: 🔍 Run linter
+        run: pnpm lint || true

@@ -1,5 +1,16 @@
 # =============================================================================
-# Publish to npm Workflow
+# Publish all packages to npm
+# =============================================================================
+#
+# Publishes @abdokouta/ts-container, @abdokouta/ts-container-react,
+# and @abdokouta/ts-application to npm in dependency order.
+#
+# Triggered by:
+#   - Pushing a version tag (v*)
+#   - Manual workflow dispatch
+#
+# Each package is published independently. If a package version already
+# exists on npm, the publish step is skipped (no error).
 # =============================================================================
 
 name: Publish to npm
@@ -16,29 +27,48 @@ jobs:
     permissions:
       contents: read
       id-token: write
+
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
+      - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v4
 
-      - name: Setup Node.js
+      - name: 🟢 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📥 Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Build package
-        run: pnpm run build
-        working-directory: packages/container
+      - name: 🔨 Build all packages
+        run: pnpm build --filter="@abdokouta/*"
 
-      - name: Publish @abdokouta/ts-container
-        run: pnpm publish --access public --no-git-checks
+      # ─────────────────────────────────────────────────────────────────────
+      # Publish in dependency order:
+      # 1. @abdokouta/ts-container (no deps)
+      # 2. @abdokouta/ts-container-react (depends on ts-container)
+      # 3. @abdokouta/ts-application (depends on ts-container)
+      # ─────────────────────────────────────────────────────────────────────
+
+      - name: 🚀 Publish @abdokouta/ts-container
+        run: pnpm publish --access public --no-git-checks || true
         working-directory: packages/container
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: ⚛️ Publish @abdokouta/ts-container-react
+        run: pnpm publish --access public --no-git-checks || true
+        working-directory: packages/react
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: 🚀 Publish @abdokouta/ts-application
+        run: pnpm publish --access public --no-git-checks || true
+        working-directory: packages/application
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

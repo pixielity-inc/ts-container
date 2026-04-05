@@ -1,6 +1,6 @@
 {
   "name": "@abdokouta/ts-container",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "NestJS-style dependency injection for React and client-side applications. Decorators, container, injector, scanner, module system — built from scratch, no Inversify.",
   "keywords": [
     "dependency-injection",
@@ -28,7 +28,11 @@
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

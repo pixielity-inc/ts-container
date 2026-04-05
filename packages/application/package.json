@@ -1,6 +1,6 @@
 {
   "name": "@abdokouta/ts-application",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Application bootstrap layer for @abdokouta/ts-container. Provides ApplicationContext.create() to scan modules, instantiate providers, and run lifecycle hooks.",
   "keywords": [
     "dependency-injection",

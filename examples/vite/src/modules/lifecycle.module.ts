@@ -1,31 +1,23 @@
-import { Module, interfaces } from "@abdokouta/react-di";
-import { LifecycleService } from "@/services/lifecycle.service";
-import { LIFECYCLE_SERVICE } from "@/constants";
-
 /**
- * Module demonstrating lifecycle hooks
- * Uses onActivation and onDeactivation from Inversiland
- * to call OnModuleInit and OnModuleDestroy interface methods
+ * Lifecycle Module
+ *
+ * Demonstrates the `OnModuleInit` and `OnModuleDestroy` lifecycle hooks.
+ *
+ * In our container, lifecycle hooks are called automatically:
+ * - `onModuleInit()` is called after all providers are instantiated
+ * - `onModuleDestroy()` is called when `app.close()` is invoked
+ *
+ * No manual `onActivation`/`onDeactivation` wiring needed — the container
+ * detects the interfaces and calls them automatically.
  */
+
+import { Module } from '@abdokouta/ts-container';
+import { LifecycleService } from '@/services/lifecycle.service';
+import { LIFECYCLE_SERVICE } from '@/constants';
+
 @Module({
   providers: [
-    {
-      provide: LIFECYCLE_SERVICE,
-      useClass: LifecycleService,
-      scope: "Singleton",
-      onActivation: (_context: interfaces.Context, instance) => {
-        // Called after instance is created, before it's returned
-        // Calls OnModuleInit.onModuleInit() if implemented
-        instance.onModuleInit();
-
-        return instance;
-      },
-      onDeactivation: (instance) => {
-        // Called when container is disposed
-        // Calls OnModuleDestroy.onModuleDestroy() if implemented
-        instance.onModuleDestroy();
-      },
-    },
+    { provide: LIFECYCLE_SERVICE, useClass: LifecycleService },
   ],
   exports: [LIFECYCLE_SERVICE],
 })

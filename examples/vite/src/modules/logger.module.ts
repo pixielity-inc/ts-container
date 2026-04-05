@@ -1,13 +1,16 @@
-import { Module, Global } from "@abdokouta/react-di";
-import { LoggerService } from "@/services/logger.service";
-import { LOGGER_SERVICE } from "@/constants";
-
 /**
- * Global Logger Module
+ * Logger Module
  *
- * Provides LoggerService globally to all modules without explicit imports.
- * This is a common pattern for infrastructure services like logging.
+ * Demonstrates the `@Global()` decorator.
+ *
+ * Global modules make their exported providers available to ALL modules
+ * without explicit imports. LoggerService can be injected anywhere.
  */
+
+import { Module, Global } from '@abdokouta/ts-container';
+import { LoggerService } from '@/services/logger.service';
+import { LOGGER_SERVICE } from '@/constants';
+
 @Global()
 @Module({
   providers: [{ provide: LOGGER_SERVICE, useClass: LoggerService }],

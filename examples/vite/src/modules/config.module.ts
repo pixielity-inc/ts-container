@@ -1,16 +1,24 @@
-import { Module, forRoot, type DynamicModule } from "@abdokouta/react-di";
+/**
+ * Configuration Module
+ *
+ * Demonstrates the `forRoot()` dynamic module pattern.
+ * Accepts runtime configuration and provides it as a value provider.
+ */
 
-import { ConfigService, type AppConfig } from "@/services/config.service";
-import { CONFIG_SERVICE } from "@/constants";
+import { Module, type DynamicModule } from '@abdokouta/ts-container';
+import { ConfigService, type AppConfig } from '@/services/config.service';
+import { CONFIG_SERVICE } from '@/constants';
 
 @Module({})
 export class ConfigModule {
   /**
-   * Dynamic module pattern: forRoot
-   * Used to configure a module with runtime options
+   * Configure the module with runtime options.
+   * Creates a ConfigService instance with the provided config
+   * and registers it as a value provider.
    */
   static forRoot(config: AppConfig): DynamicModule {
-    return forRoot(ConfigModule, {
+    return {
+      module: ConfigModule,
       providers: [
         {
           provide: CONFIG_SERVICE,
@@ -18,6 +26,6 @@ export class ConfigModule {
         },
       ],
       exports: [CONFIG_SERVICE],
-    });
+    };
   }
 }

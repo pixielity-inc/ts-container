@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "@abdokouta/react-di",
+  name: "@abdokouta/ts-container",
   description:
     "Dependency injection container for React with NestJS-style modules",
   navItems: [

@@ -1,4 +1,4 @@
-import { Injectable } from "@abdokouta/react-di";
+import { Injectable } from "@abdokouta/ts-container";
 
 export interface AppConfig {
   apiUrl: string;

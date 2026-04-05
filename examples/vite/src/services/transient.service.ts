@@ -1,4 +1,4 @@
-import { Injectable, Inject } from "@abdokouta/react-di";
+import { Injectable, Inject } from "@abdokouta/ts-container";
 import { LOGGER_SERVICE } from "@/constants";
 
 /**

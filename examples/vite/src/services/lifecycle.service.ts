@@ -1,18 +1,21 @@
+/**
+ * Lifecycle Service
+ *
+ * A dedicated service that demonstrates the full lifecycle pattern.
+ * Manages a set of "resources" (simulated) and shows how
+ * `OnModuleInit` and `OnModuleDestroy` work together.
+ *
+ * The container calls these automatically — no manual wiring needed.
+ */
+
 import {
   Injectable,
   Inject,
   type OnModuleInit,
   type OnModuleDestroy,
-} from "@abdokouta/react-di";
-import { LOGGER_SERVICE } from "@/constants";
+} from '@abdokouta/ts-container';
+import { LOGGER_SERVICE } from '@/constants';
 
-/**
- * Service with lifecycle hooks demonstration
- * Shows initialization and cleanup patterns
- *
- * Implements OnModuleInit and OnModuleDestroy interfaces
- * These methods are called by the module's onActivation and onDeactivation hooks
- */
 @Injectable()
 export class LifecycleService implements OnModuleInit, OnModuleDestroy {
   private isInitialized = false;
@@ -20,51 +23,58 @@ export class LifecycleService implements OnModuleInit, OnModuleDestroy {
   private cleanupCallbacks: Array<() => void> = [];
 
   constructor(@Inject(LOGGER_SERVICE) private logger: any) {
-    this.logger.info("LifecycleService constructor called");
+    this.logger.info('LifecycleService constructor called');
   }
 
   /**
-   * OnModuleInit implementation
-   * Called by module's onActivation hook after construction
-   * Use for async setup, resource allocation, etc.
+   * Called by the container after all providers in the module
+   * have been instantiated and their dependencies injected.
+   *
+   * Use for:
+   * - Async setup (connecting to services, warming caches)
+   * - Resource allocation
+   * - Validation that dependencies are in the expected state
    */
-  onModuleInit(): void {
-    this.logger.info(
-      "LifecycleService.onModuleInit() - Initializing resources...",
-    );
+  async onModuleInit(): Promise<void> {
+    this.logger.info('LifecycleService.onModuleInit() — allocating resources...');
 
-    // Simulate initialization (sync version for demo)
-    this.resources.push("Database Connection");
-    this.resources.push("Cache Connection");
-    this.resources.push("Message Queue");
+    // Simulate async resource allocation
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    this.resources.push('Database Connection');
+    this.resources.push('Cache Connection');
+    this.resources.push('Message Queue');
 
     this.isInitialized = true;
     this.logger.info(
-      "LifecycleService.onModuleInit() - Initialization complete",
+      `LifecycleService.onModuleInit() — ready with ${this.resources.length} resources`,
     );
   }
 
   /**
-   * OnModuleDestroy implementation
-   * Called by module's onDeactivation hook before destruction
-   * Use for cleanup, closing connections, etc.
+   * Called by the container when `app.close()` is invoked.
+   *
+   * Use for:
+   * - Closing connections
+   * - Flushing buffers
+   * - Releasing resources
+   * - Running registered cleanup callbacks
    */
-  onModuleDestroy(): void {
-    this.logger.info(
-      "LifecycleService.onModuleDestroy() - Cleaning up resources...",
-    );
+  async onModuleDestroy(): Promise<void> {
+    this.logger.info('LifecycleService.onModuleDestroy() — releasing resources...');
 
-    // Clean up resources
-    this.resources.forEach((resource) => {
-      this.logger.log(`Releasing: ${resource}`);
-    });
+    for (const resource of this.resources) {
+      this.logger.log(`  Releasing: ${resource}`);
+    }
 
-    // Call cleanup callbacks
-    this.cleanupCallbacks.forEach((callback) => callback());
+    for (const callback of this.cleanupCallbacks) {
+      callback();
+    }
 
     this.resources = [];
+    this.cleanupCallbacks = [];
     this.isInitialized = false;
-    this.logger.info("LifecycleService.onModuleDestroy() - Cleanup complete");
+    this.logger.info('LifecycleService.onModuleDestroy() — cleanup complete');
   }
 
   getStatus(): { initialized: boolean; resources: string[] } {

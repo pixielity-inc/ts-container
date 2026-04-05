@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useInject } from "@abdokouta/react-di";
+import { useInject } from "@abdokouta/ts-container-react";
 import { Card, Button, Input, Label, Table, Chip } from "@heroui/react";
 
 import { CounterService } from "@/services/counter.service";

@@ -1,5 +1,20 @@
-import { Injectable, Inject } from "@abdokouta/react-di";
-import { CACHE_CONFIG, LOGGER_SERVICE } from "@/constants";
+/**
+ * Cache Service
+ *
+ * Implements both `OnModuleInit` and `OnModuleDestroy`:
+ * - `onModuleInit()` — logs cache readiness, could pre-warm entries
+ * - `onModuleDestroy()` — flushes the cache on shutdown
+ *
+ * Demonstrates a service that manages resources with a full lifecycle.
+ */
+
+import {
+  Injectable,
+  Inject,
+  type OnModuleInit,
+  type OnModuleDestroy,
+} from '@abdokouta/ts-container';
+import { CACHE_CONFIG, LOGGER_SERVICE } from '@/constants';
 
 export interface CacheConfig {
   maxSize: number;
@@ -12,29 +27,44 @@ interface CacheEntry<T> {
 }
 
 @Injectable()
-export class CacheService {
+export class CacheService implements OnModuleInit, OnModuleDestroy {
   private cache = new Map<string, CacheEntry<unknown>>();
 
   constructor(
     @Inject(CACHE_CONFIG) private config: CacheConfig,
     @Inject(LOGGER_SERVICE) private logger: any,
-  ) {
+  ) {}
+
+  /**
+   * Called after all providers are instantiated.
+   * Good place to pre-warm the cache or validate config.
+   */
+  onModuleInit(): void {
     this.logger.info(
-      `CacheService initialized with maxSize: ${config.maxSize}, ttl: ${config.ttl}ms`,
+      `CacheService ready — maxSize: ${this.config.maxSize}, ttl: ${this.config.ttl}ms`,
     );
+  }
+
+  /**
+   * Called on application shutdown.
+   * Flushes the cache and releases memory.
+   */
+  onModuleDestroy(): void {
+    const size = this.cache.size;
+    this.cache.clear();
+    this.logger.info(`CacheService destroyed — flushed ${size} entries`);
   }
 
   set<T>(key: string, value: T): void {
     if (this.cache.size >= this.config.maxSize) {
       const firstKey = this.cache.keys().next().value;
-      this.cache.delete(firstKey);
-      this.logger.log(`Cache full, evicted key: ${firstKey}`);
+      if (firstKey !== undefined) {
+        this.cache.delete(firstKey);
+        this.logger.log(`Cache full, evicted key: ${firstKey}`);
+      }
     }
 
-    this.cache.set(key, {
-      value,
-      timestamp: Date.now(),
-    });
+    this.cache.set(key, { value, timestamp: Date.now() });
     this.logger.log(`Cached value for key: ${key}`);
   }
 
@@ -59,7 +89,7 @@ export class CacheService {
 
   clear(): void {
     this.cache.clear();
-    this.logger.log("Cache cleared");
+    this.logger.log('Cache cleared');
   }
 
   getStats() {

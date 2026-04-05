@@ -1,7 +1,22 @@
-import { Injectable, Inject } from "@abdokouta/react-di";
-import { LOGGER_SERVICE } from "@/constants";
+/**
+ * API Service
+ *
+ * Implements `OnModuleInit` to eagerly connect on bootstrap,
+ * and `OnModuleDestroy` to disconnect on shutdown.
+ *
+ * Demonstrates async lifecycle hooks — `onModuleInit()` returns
+ * a Promise, and the container awaits it before continuing.
+ */
 
-export const API_CONNECTION = Symbol.for("API_CONNECTION");
+import {
+  Injectable,
+  Inject,
+  type OnModuleInit,
+  type OnModuleDestroy,
+} from '@abdokouta/ts-container';
+import { LOGGER_SERVICE } from '@/constants';
+
+export const API_CONNECTION = Symbol.for('API_CONNECTION');
 
 export interface ApiConnection {
   baseUrl: string;
@@ -11,12 +26,30 @@ export interface ApiConnection {
 }
 
 @Injectable()
-export class ApiService {
+export class ApiService implements OnModuleInit, OnModuleDestroy {
   constructor(
     @Inject(API_CONNECTION) private connection: ApiConnection,
     @Inject(LOGGER_SERVICE) private logger: any,
-  ) {
-    this.logger.info("ApiService initialized with connection");
+  ) {}
+
+  /**
+   * Called after all providers are instantiated.
+   * Eagerly establishes the API connection so it's ready
+   * before any component tries to use it.
+   */
+  async onModuleInit(): Promise<void> {
+    this.logger.info('ApiService initializing — connecting...');
+    await this.connection.connect();
+    this.logger.info(`ApiService ready — connected to ${this.connection.baseUrl}`);
+  }
+
+  /**
+   * Called on application shutdown.
+   * Cleanly disconnects from the API.
+   */
+  onModuleDestroy(): void {
+    this.logger.info('ApiService shutting down — disconnecting...');
+    this.connection.disconnect();
   }
 
   async fetchData<T>(endpoint: string): Promise<T> {
@@ -29,7 +62,7 @@ export class ApiService {
     // Simulate API call
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve({ data: "mock data" } as T);
+        resolve({ data: 'mock data' } as T);
       }, 500);
     });
   }

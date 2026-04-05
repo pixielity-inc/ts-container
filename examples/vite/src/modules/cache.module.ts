@@ -1,26 +1,29 @@
-import {
-  Module,
-  Global,
-  forFeature,
-  type DynamicModule,
-} from "@abdokouta/react-di";
-import { CacheService, type CacheConfig } from "@/services/cache.service";
-import { CACHE_SERVICE, CACHE_CONFIG } from "@/constants";
+/**
+ * Cache Module
+ *
+ * Demonstrates:
+ * - `@Global()` decorator — makes CacheService available to all modules
+ * - `forFeature()` dynamic module pattern — feature-specific configuration
+ * - `OnModuleInit` lifecycle — logs when the cache is ready
+ */
+
+import { Module, Global, type DynamicModule } from '@abdokouta/ts-container';
+import { CacheService, type CacheConfig } from '@/services/cache.service';
+import { CACHE_SERVICE, CACHE_CONFIG } from '@/constants';
 
 @Global()
 @Module({})
 export class CacheModule {
   /**
-   * Dynamic module pattern: forFeature
-   * Used for feature-specific configuration that can be imported multiple times
+   * Register the cache with feature-specific configuration.
    *
-   * @Global decorator makes CacheService available to all modules without explicit imports
-   * This is useful for shared services like caching, logging, or configuration
+   * Because `@Global()` is on the class, the exported CacheService
+   * is available to ALL modules without explicit imports.
    */
   static forFeature(config: CacheConfig): DynamicModule {
-    console.log(`[CacheModule.forFeature] Called with config:`, config);
-
-    return forFeature(CacheModule, {
+    return {
+      module: CacheModule,
+      global: true,
       providers: [
         {
           provide: CACHE_CONFIG,
@@ -29,6 +32,6 @@ export class CacheModule {
         { provide: CACHE_SERVICE, useClass: CacheService },
       ],
       exports: [CACHE_SERVICE],
-    });
+    };
   }
 }

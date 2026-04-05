@@ -1,185 +1,94 @@
 /**
- * @abdokouta/react-di
+ * @abdokouta/ts-container
  *
- * Dependency injection container for React with NestJS-style modules.
- * Built on top of Inversiland for powerful, type-safe dependency injection
- * with decorators, React hooks, and module-based architecture.
+ * NestJS-style dependency injection for React and client-side applications.
+ * Built from scratch — no Inversify, no heavy runtime.
+ *
+ * This is the main entry point. It exports:
+ * - Decorators (@Injectable, @Inject, @Module, @Optional, @Global)
+ * - The DI engine (Container, Injector, Scanner, Module, InstanceWrapper)
+ * - Interfaces and types
+ * - Utilities (forwardRef)
+ *
+ * For React bindings, import from `@abdokouta/ts-container/react`.
  *
  * @example
- * Basic module and service setup:
  * ```typescript
- * import { Module, Injectable, Inject } from '@abdokouta/react-di';
  * import 'reflect-metadata';
- *
- * @Injectable()
- * class LoggerService {
- *   log(message: string) {
- *     console.log(message);
- *   }
- * }
+ * import { Injectable, Inject, Module } from '@abdokouta/ts-container';
  *
  * @Injectable()
  * class UserService {
- *   constructor(@Inject(LoggerService) private logger: LoggerService) {}
- *
- *   getUser(id: string) {
- *     this.logger.log(`Fetching user ${id}`);
- *     return { id, name: 'John Doe' };
- *   }
+ *   constructor(private logger: LoggerService) {}
  * }
  *
  * @Module({
  *   providers: [LoggerService, UserService],
+ *   exports: [UserService],
  * })
- * export class AppModule {}
+ * class UserModule {}
  * ```
  *
- * @example
- * Using in React components:
- * ```typescript
- * import { ContainerProvider, useInject } from '@abdokouta/react-di';
- * import { AppModule } from './app.module';
- *
- * function App() {
- *   return (
- *     <ContainerProvider module={AppModule}>
- *       <UserComponent />
- *     </ContainerProvider>
- *   );
- * }
- *
- * function UserComponent() {
- *   const userService = useInject(UserService);
- *   const user = userService.getUser('123');
- *   return <div>{user.name}</div>;
- * }
- * ```
- *
- * @example
- * Factory providers:
- * ```typescript
- * @Module({
- *   providers: [
- *     {
- *       provide: ConfigService,
- *       useFactory: () => new ConfigService({ apiUrl: 'https://api.example.com' }),
- *     },
- *   ],
- * })
- * export class AppModule {}
- * ```
- *
- * @module @abdokouta/react-di
+ * @module @abdokouta/ts-container
  */
 
-import "reflect-metadata";
+import 'reflect-metadata';
 
-// ============================================================================
+// ─────────────────────────────────────────────────────────────────────────────
 // Decorators
-// ============================================================================
-export {
-  Module,
-  Global,
-  Injectable,
-  Inject,
-  MultiInject,
-  Optional,
-  InjectProvided,
-  InjectImported,
-  MultiInjectProvided,
-  MultiInjectImported,
-} from "./decorators";
+// ─────────────────────────────────────────────────────────────────────────────
+export { Injectable } from './decorators/injectable.decorator';
+export { Inject } from './decorators/inject.decorator';
+export { Optional } from './decorators/optional.decorator';
+export { Module } from './decorators/module.decorator';
+export { Global } from './decorators/global.decorator';
 
-// ============================================================================
-// Types (from Inversiland)
-// ============================================================================
+// ─────────────────────────────────────────────────────────────────────────────
+// Interfaces & Types
+// ─────────────────────────────────────────────────────────────────────────────
+export type { Type } from './interfaces/type.interface';
+export type { InjectionToken } from './interfaces/injection-token.interface';
 export type {
-  // Core Types
-  Newable,
-  NewableModule,
-  DynamicModule,
-  ModuleContainer,
-  ServiceIdentifier,
-
-  // Provider Types (use Provider union type from Inversiland)
   Provider,
+  ClassProvider,
+  ValueProvider,
+  FactoryProvider,
+  ExistingProvider,
+} from './interfaces/provider.interface';
+export type { ModuleMetadata } from './interfaces/module-metadata.interface';
+export type { DynamicModule } from './interfaces/dynamic-module.interface';
+export type { ForwardReference } from './interfaces/forward-reference.interface';
+export type { OnModuleInit, OnModuleDestroy } from './interfaces/lifecycle.interface';
+export type { ContainerResolver } from './interfaces/container-resolver.interface';
+export type { ScopeOptions } from './interfaces/scope-options.interface';
+export { Scope } from './interfaces/scope.enum';
 
-  // Module Types
-  ModuleMetadataArg,
-  ExportedProvider,
-  DetailedExportedProvider,
-
-  // Factory Types
-  Factory,
-  AsyncFactory,
-  FactoryWrapper,
-  AsyncFactoryWrapper,
-
-  // Custom Types
-  Scope,
-  LogLevel,
-} from "./types";
-
-// ============================================================================
-// Interfaces (Custom)
-// ============================================================================
-export type {
-  IContainerConfig,
-  IModuleOptions,
-  IModuleAsyncOptions,
-  OnModuleInit,
-  OnModuleDestroy,
-  ContainerProviderProps,
-} from "./interfaces";
-
-export { hasOnModuleInit, hasOnModuleDestroy } from "./interfaces";
-
-// ============================================================================
-// React Hooks
-// ============================================================================
-export { useInject, useModule, useContainer } from "./hooks";
-
-// ============================================================================
-// React Providers
-// ============================================================================
-export { ContainerProvider } from "./providers";
-
-// ============================================================================
+// ─────────────────────────────────────────────────────────────────────────────
 // Utilities
-// ============================================================================
+// ─────────────────────────────────────────────────────────────────────────────
+export { forwardRef } from './utils/forward-ref.util';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DI Engine (Container, Injector, Scanner, Module, etc.)
+// ─────────────────────────────────────────────────────────────────────────────
+export { NestContainer } from './injector/container';
+export { Module as ModuleRef } from './injector/module';
+export { Injector } from './injector/injector';
+export { InstanceWrapper } from './injector/instance-wrapper';
+export { InstanceLoader } from './injector/instance-loader';
+export { DependenciesScanner } from './injector/scanner';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Constants (for library authors building on top of this)
+// ─────────────────────────────────────────────────────────────────────────────
 export {
-  defineConfig,
-  createModuleFactory,
-  forRoot,
-  forFeature,
-} from "./utils";
-export {
-  initContainer,
-  type InitContainerOptions,
-} from "./utils/init-container.util";
-
-// ============================================================================
-// Builders
-// ============================================================================
-export { Container } from "./container";
-
-// ============================================================================
-// Constants
-// ============================================================================
-export { METADATA_KEYS, DEFAULTS } from "./constants";
-
-// ============================================================================
-// React Contexts
-// ============================================================================
-export { ContainerContext } from "./contexts";
-export type { ContainerContextValue } from "./contexts";
-
-// ============================================================================
-// InversifyJS / Inversiland Exports
-// ============================================================================
-export type { interfaces, DecoratorTarget } from "@inversiland/inversify";
-
-// ============================================================================
-// Inversiland Utilities (for Facades and external use)
-// ============================================================================
-export { getModuleContainer, Inversiland } from "inversiland";
+  MODULE_METADATA,
+  GLOBAL_MODULE_METADATA,
+  INJECTABLE_WATERMARK,
+  SCOPE_OPTIONS_METADATA,
+  PARAMTYPES_METADATA,
+  SELF_DECLARED_DEPS_METADATA,
+  OPTIONAL_DEPS_METADATA,
+  PROPERTY_DEPS_METADATA,
+  OPTIONAL_PROPERTY_DEPS_METADATA,
+} from './constants/tokens.constant';

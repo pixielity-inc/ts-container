@@ -1,15 +1,6 @@
 /**
- * @fileoverview Utils Index
- *
- * Re-exports all utility functions.
- *
- * @module @abdokouta/react-di
- * @category Utils
+ * @fileoverview Utility exports.
+ * @module utils
  */
 
-// ============================================================================
-// Utility Functions
-// ============================================================================
-export { defineConfig } from "./define-config.util";
-export { createModuleFactory } from "./create-module-factory.util";
-export { forRoot, forFeature } from "./module-helpers.util";
+export { forwardRef } from './forward-ref.util';

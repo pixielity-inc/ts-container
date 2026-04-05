@@ -1,61 +1,79 @@
 /**
- * Interface for services that need to perform initialization logic
- * after all dependencies have been injected.
+ * @fileoverview Lifecycle hook interfaces.
  *
- * Similar to NestJS's OnModuleInit interface.
+ * Providers can implement these interfaces to hook into the application
+ * lifecycle. The container calls these methods at specific points during
+ * bootstrap and shutdown.
+ *
+ * ## Lifecycle order:
+ *
+ * **Bootstrap:**
+ * 1. All providers are instantiated (constructor injection)
+ * 2. `onModuleInit()` is called on all providers that implement it
+ *
+ * **Shutdown:**
+ * 1. `onModuleDestroy()` is called on all providers that implement it
+ * 2. Provider references are released
+ *
+ * @module interfaces/lifecycle
+ */
+
+/**
+ * Interface for providers that need initialization after construction.
+ *
+ * `onModuleInit()` is called after all providers in the module have been
+ * instantiated and their dependencies injected. This is the right place
+ * for async initialization like connecting to databases or warming caches.
  *
  * @example
  * ```typescript
  * @Injectable()
- * export class DatabaseService implements OnModuleInit {
+ * class DatabaseService implements OnModuleInit {
+ *   private connection: Connection;
+ *
+ *   constructor(@Inject(DB_CONFIG) private config: DbConfig) {}
+ *
  *   async onModuleInit() {
- *     await this.connect();
+ *     // All dependencies are available here
+ *     this.connection = await createConnection(this.config);
  *   }
  * }
  * ```
  */
 export interface OnModuleInit {
-  /**
-   * Called after the module has been initialized and all dependencies injected.
-   * Can be async for asynchronous initialization.
-   */
-  onModuleInit(): void | Promise<void>;
+  onModuleInit(): any | Promise<any>;
 }
 
 /**
- * Interface for services that need to perform cleanup logic
- * before the module is destroyed.
+ * Interface for providers that need cleanup before shutdown.
  *
- * Similar to NestJS's OnModuleDestroy interface.
+ * `onModuleDestroy()` is called when the application is shutting down.
+ * Use this to close connections, flush buffers, and release resources.
  *
  * @example
  * ```typescript
  * @Injectable()
- * export class DatabaseService implements OnModuleDestroy {
+ * class RedisManager implements OnModuleDestroy {
  *   async onModuleDestroy() {
- *     await this.disconnect();
+ *     await this.disconnectAll();
  *   }
  * }
  * ```
  */
 export interface OnModuleDestroy {
-  /**
-   * Called before the module is destroyed.
-   * Can be async for asynchronous cleanup.
-   */
-  onModuleDestroy(): void | Promise<void>;
+  onModuleDestroy(): any | Promise<any>;
 }
 
 /**
- * Type guard to check if an object implements OnModuleInit
+ * Type guard: check if an object implements OnModuleInit.
  */
-export function hasOnModuleInit(obj: any): obj is OnModuleInit {
-  return obj != null && typeof obj.onModuleInit === "function";
+export function hasOnModuleInit(instance: any): instance is OnModuleInit {
+  return instance && typeof instance.onModuleInit === 'function';
 }
 
 /**
- * Type guard to check if an object implements OnModuleDestroy
+ * Type guard: check if an object implements OnModuleDestroy.
  */
-export function hasOnModuleDestroy(obj: any): obj is OnModuleDestroy {
-  return obj != null && typeof obj.onModuleDestroy === "function";
+export function hasOnModuleDestroy(instance: any): instance is OnModuleDestroy {
+  return instance && typeof instance.onModuleDestroy === 'function';
 }

@@ -1,26 +1,22 @@
 /**
- * @fileoverview Interfaces Index
+ * @fileoverview All interfaces and types for the DI container.
  *
- * Re-exports custom interface definitions (not from Inversiland).
- *
- * @module @abdokouta/react-di
- * @category Interfaces
+ * @module interfaces
  */
 
-// ============================================================================
-// Module Configuration Interfaces
-// ============================================================================
-export type { IContainerConfig } from "./container-config.interface";
-export type { IModuleOptions } from "./module-options.interface";
-export type { IModuleAsyncOptions } from "./module-async-options.interface";
-
-// ============================================================================
-// Lifecycle Interfaces
-// ============================================================================
-export type { OnModuleInit, OnModuleDestroy } from "./lifecycle.interface";
-export { hasOnModuleInit, hasOnModuleDestroy } from "./lifecycle.interface";
-
-// ============================================================================
-// Component Interfaces
-// ============================================================================
-export type { ContainerProviderProps } from "./container-provider-props.interface";
+export type { Type } from './type.interface';
+export type { InjectionToken } from './injection-token.interface';
+export type {
+  Provider,
+  ClassProvider,
+  ValueProvider,
+  FactoryProvider,
+  ExistingProvider,
+} from './provider.interface';
+export type { ModuleMetadata } from './module-metadata.interface';
+export type { DynamicModule } from './dynamic-module.interface';
+export type { ForwardReference } from './forward-reference.interface';
+export type { OnModuleInit, OnModuleDestroy } from './lifecycle.interface';
+export type { ContainerResolver } from './container-resolver.interface';
+export type { ScopeOptions } from './scope-options.interface';
+export { Scope } from './scope.enum';

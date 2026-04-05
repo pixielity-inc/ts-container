@@ -1,14 +1,16 @@
 /**
- * @fileoverview Constants Index
- *
- * Re-exports all constants.
- *
- * @module @abdokouta/react-di
- * @category Constants
+ * @fileoverview Constants exports.
+ * @module constants
  */
 
-// ============================================================================
-// Constants
-// ============================================================================
-export { DEFAULTS } from "./defaults.constant";
-export { METADATA_KEYS } from "./metadata-keys.constant";
+export {
+  MODULE_METADATA,
+  GLOBAL_MODULE_METADATA,
+  INJECTABLE_WATERMARK,
+  SCOPE_OPTIONS_METADATA,
+  PARAMTYPES_METADATA,
+  SELF_DECLARED_DEPS_METADATA,
+  OPTIONAL_DEPS_METADATA,
+  PROPERTY_DEPS_METADATA,
+  OPTIONAL_PROPERTY_DEPS_METADATA,
+} from "./tokens.constant";

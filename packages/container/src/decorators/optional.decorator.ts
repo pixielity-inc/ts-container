@@ -1,34 +1,57 @@
-import { optional } from "inversiland";
+/**
+ * @fileoverview @Optional() decorator.
+ *
+ * Marks a dependency as optional. If the container cannot resolve the
+ * dependency, `undefined` is injected instead of throwing an error.
+ *
+ * @module decorators/optional
+ */
+
+import 'reflect-metadata';
+import {
+  OPTIONAL_DEPS_METADATA,
+  OPTIONAL_PROPERTY_DEPS_METADATA,
+} from '@/constants';
 
 /**
- * Optional Decorator
+ * Marks a constructor parameter or property dependency as optional.
  *
- * @description
- * Marks an injected dependency as optional.
- * If the dependency is not available, undefined will be injected instead of throwing an error.
+ * Without `@Optional()`, an unresolvable dependency throws an error.
+ * With `@Optional()`, `undefined` is injected instead.
  *
  * @example
  * ```typescript
- * import { Injectable, Inject, Optional } from "@abdokouta/react-di";
- *
  * @Injectable()
- * export class UserService {
+ * class CacheService {
  *   constructor(
- *     @Inject(Logger) private logger: Logger,
- *     @Inject(Cache) @Optional() private cache?: Cache
- *   ) {}
- *
- *   getUser(id: string) {
- *     if (this.cache) {
- *       return this.cache.get(id);
- *     }
- *     return this.fetchUser(id);
+ *     @Inject(CACHE_CONFIG) private config: CacheConfig,
+ *     @Optional() @Inject(RedisManager) private redis?: RedisManager,
+ *   ) {
+ *     // redis will be undefined if RedisModule is not imported
  *   }
  * }
  * ```
- *
- * @public
  */
-export function Optional(): ParameterDecorator & PropertyDecorator {
-  return optional() as ParameterDecorator & PropertyDecorator;
+export function Optional(): PropertyDecorator & ParameterDecorator {
+  return (target: object, key: string | symbol | undefined, index?: number) => {
+    if (index !== undefined) {
+      // Constructor parameter — store the index
+      const existingOptional =
+        Reflect.getMetadata(OPTIONAL_DEPS_METADATA, target) || [];
+      Reflect.defineMetadata(
+        OPTIONAL_DEPS_METADATA,
+        [...existingOptional, index],
+        target,
+      );
+    } else {
+      // Property — store the property key
+      const existingOptional =
+        Reflect.getMetadata(OPTIONAL_PROPERTY_DEPS_METADATA, target.constructor) || [];
+      Reflect.defineMetadata(
+        OPTIONAL_PROPERTY_DEPS_METADATA,
+        [...existingOptional, key],
+        target.constructor,
+      );
+    }
+  };
 }

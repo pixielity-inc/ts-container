@@ -1,56 +1,68 @@
-import { module } from "inversiland";
-import type { Newable } from "inversiland";
+/**
+ * @fileoverview @Module() decorator.
+ *
+ * Defines a module — the organizational unit of the DI system.
+ * Modules group related providers and define the dependency graph
+ * between different parts of the application.
+ *
+ * ## How it works:
+ *
+ * The decorator iterates over the metadata object and stores each
+ * property as a separate metadata entry on the class:
+ *
+ * ```
+ * @Module({ imports: [...], providers: [...], exports: [...] })
+ * class MyModule {}
+ *
+ * // Becomes:
+ * Reflect.defineMetadata('imports', [...], MyModule)
+ * Reflect.defineMetadata('providers', [...], MyModule)
+ * Reflect.defineMetadata('exports', [...], MyModule)
+ * ```
+ *
+ * The scanner later reads these metadata entries to build the module graph.
+ *
+ * @module decorators/module
+ */
 
-import type { ModuleMetadataArg } from "@/types";
+import 'reflect-metadata';
+import type { ModuleMetadata } from '@/interfaces';
+
+/** 
+ * Valid keys for @Module() metadata. 
+ */
+const VALID_MODULE_KEYS = new Set(['imports', 'providers', 'exports']);
 
 /**
- * Module Decorator
+ * Decorator that defines a module.
  *
- * @description
- * Defines a module in the dependency injection system.
- * A module is a class that organizes related providers and their dependencies.
- *
- * If the class is decorated with @Global(), all providers will automatically
- * be marked as global (isGlobal: true). Note: @Global() runs AFTER @Module
- * due to TypeScript decorator execution order (bottom-to-top), so @Global()
- * reads and modifies the metadata set by @Module.
- *
- * @param metadata - Module configuration
- * @param metadata.imports - Modules to import
- * @param metadata.providers - Services to provide
- * @param metadata.exports - Services to export to other modules
+ * @param metadata - Module configuration (imports, providers, exports)
  *
  * @example
  * ```typescript
- * import { Module } from "@abdokouta/react-di";
- *
  * @Module({
- *   imports: [CommonModule],
- *   providers: [UserService, Logger],
- *   exports: [UserService]
+ *   imports: [ConfigModule.forRoot(config)],
+ *   providers: [UserService, UserRepository],
+ *   exports: [UserService],
  * })
- * export class UserModule {}
+ * class UserModule {}
  * ```
- *
- * @example With @Global() decorator
- * ```typescript
- * import { Module, Global } from "@abdokouta/react-di";
- *
- * @Global()
- * @Module({
- *   providers: [LoggerService],
- *   exports: [LoggerService]
- * })
- * export class LoggerModule {}
- * // LoggerService is now available globally without explicit imports
- * ```
- *
- * @public
  */
-export const Module = (metadata: ModuleMetadataArg = {}): ClassDecorator => {
-  return function <T extends Function>(target: T): T | void {
-    // Apply the inversiland module decorator
-    // Note: If @Global() is also applied, it will run AFTER this and modify the metadata
-    return module(metadata)(target as unknown as Newable);
+export function Module(metadata: ModuleMetadata): ClassDecorator {
+  // Validate that only known keys are used
+  const invalidKeys = Object.keys(metadata).filter(key => !VALID_MODULE_KEYS.has(key));
+  if (invalidKeys.length > 0) {
+    throw new Error(
+      `Invalid property '${invalidKeys.join("', '")}' passed into the @Module() decorator. ` +
+      `Valid properties are: ${[...VALID_MODULE_KEYS].join(', ')}.`,
+    );
+  }
+
+  return (target: Function) => {
+    for (const property in metadata) {
+      if (Object.prototype.hasOwnProperty.call(metadata, property)) {
+        Reflect.defineMetadata(property, (metadata as any)[property], target);
+      }
+    }
   };
-};
+}

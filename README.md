@@ -5,64 +5,70 @@
 <h1 align="center">@abdokouta/ts-container</h1>
 
 <p align="center">
-  <strong>Powerful dependency injection for React with NestJS-style modules</strong>
+  <strong>NestJS-style dependency injection for React and client-side apps</strong>
 </p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@abdokouta/ts-container"><img src="https://img.shields.io/npm/v/@abdokouta/ts-container.svg?style=flat-square" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/@abdokouta/ts-container"><img src="https://img.shields.io/npm/dm/@abdokouta/ts-container.svg?style=flat-square" alt="npm downloads" /></a>
-  <a href="https://github.com/abdokouta/react-di/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@abdokouta/ts-container.svg?style=flat-square" alt="license" /></a>
-  <a href="https://github.com/abdokouta/react-di"><img src="https://img.shields.io/github/stars/abdokouta/react-di?style=flat-square" alt="GitHub stars" /></a>
+  <a href="https://github.com/pixielity-inc/ts-container/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@abdokouta/ts-container.svg?style=flat-square" alt="license" /></a>
 </p>
 
 <p align="center">
-  Built on top of <a href="https://github.com/inversiland/inversiland">Inversiland</a> • TypeScript-first • Zero boilerplate
+  Built from scratch — no Inversify • TypeScript-first • Full lifecycle hooks • React hooks
 </p>
 
 ---
 
-## ✨ Features
+## What is this?
 
-- 🎯 **NestJS-style modules** - Familiar patterns for organizing your React app
-- 💉 **Powerful DI** - Constructor injection with decorators
-- 🔄 **Dynamic modules** - `forRoot` and `forFeature` patterns
-- ⚛️ **React hooks** - `useInject` for seamless component integration
-- 🌍 **Global modules** - Share services across your entire app
-- 🔥 **HMR support** - Works perfectly with Vite hot module replacement
-- 📦 **Tree-shakeable** - Only bundle what you use
-- 🎨 **TypeScript-first** - Full type safety and IntelliSense
+A complete dependency injection system for TypeScript, modeled after NestJS but designed for client-side React apps. Three packages, one monorepo:
 
-## 📦 Installation
+| Package                         | Description                                                            |
+| ------------------------------- | ---------------------------------------------------------------------- |
+| `@abdokouta/ts-container`       | Decorators, interfaces, container, injector, scanner, module system    |
+| `@abdokouta/ts-container-react` | React bindings — `ContainerProvider`, `useInject`, `useOptionalInject` |
+| `@abdokouta/ts-application`     | Bootstrap layer — `ApplicationContext.create(AppModule)`               |
+
+## Features
+
+- `@Injectable()`, `@Inject()`, `@Module()`, `@Global()`, `@Optional()` decorators
+- Dynamic modules with `forRoot()` / `forFeature()` pattern
+- Constructor injection + property injection
+- Singleton and transient scopes
+- `OnModuleInit` / `OnModuleDestroy` lifecycle hooks (sync and async)
+- Circular dependency detection
+- `forwardRef()` for circular module imports
+- React hooks for component-level DI
+- Zero external runtime dependencies (just `reflect-metadata`)
+
+## Installation
 
 ```bash
-npm install @abdokouta/ts-container reflect-metadata
+# Core (decorators, container, injector)
+pnpm add @abdokouta/ts-container reflect-metadata
+
+# React bindings (optional — only if using React)
+pnpm add @abdokouta/ts-container-react
+
+# Application bootstrap (required to start the app)
+pnpm add @abdokouta/ts-application
 ```
 
-## 🚀 Quick Start
+Make sure your `tsconfig.json` has:
 
-### 1. Initialize the Container
-
-```typescript
-// main.tsx
-import "reflect-metadata";
-import { Container, ContainerProvider } from "@abdokouta/ts-container";
-import { AppModule } from "./modules/app.module";
-
-Container
-  .configure()
-  .withModule(AppModule)
-  .withLogLevel(import.meta.env.DEV ? "debug" : "info")
-  .withDefaultScope("Singleton")
-  .build();
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <ContainerProvider module={AppModule}>
-    <App />
-  </ContainerProvider>
-);
+```json
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
 ```
 
-### 2. Create Services
+## Quick Start
+
+### 1. Define services
 
 ```typescript
 import { Injectable, Inject } from "@abdokouta/ts-container";
@@ -76,64 +82,107 @@ export class LoggerService {
 
 @Injectable()
 export class UserService {
-  constructor(@Inject(LoggerService) private logger: LoggerService) {}
+  constructor(private logger: LoggerService) {}
 
   getUsers() {
     this.logger.log("Fetching users...");
-    return [{ id: 1, name: "John" }];
+    return [
+      { id: "1", name: "Alice" },
+      { id: "2", name: "Bob" },
+    ];
   }
 }
 ```
 
-### 3. Create Modules
+### 2. Define a module
 
 ```typescript
 import { Module } from "@abdokouta/ts-container";
 
 @Module({
   providers: [LoggerService, UserService],
+  exports: [UserService],
 })
 export class AppModule {}
 ```
 
-### 4. Use in Components
+### 3. Bootstrap the application
 
-```typescript
+```tsx
+import "reflect-metadata";
+import { ApplicationContext } from "@abdokouta/ts-application";
+import { ContainerProvider } from "@abdokouta/ts-container-react";
+import { AppModule } from "./modules/app.module";
+
+async function bootstrap() {
+  const app = await ApplicationContext.create(AppModule);
+
+  ReactDOM.createRoot(document.getElementById("root")!).render(
+    <ContainerProvider context={app}>
+      <App />
+    </ContainerProvider>,
+  );
+}
+
+bootstrap();
+```
+
+### 4. Use in components
+
+```tsx
 import { useInject } from "@abdokouta/ts-container-react";
+import { UserService } from "./services/user.service";
 
-export function UserList() {
+function UserList() {
   const userService = useInject(UserService);
   const users = userService.getUsers();
 
   return (
     <ul>
-      {users.map(user => <li key={user.id}>{user.name}</li>)}
+      {users.map((user) => (
+        <li key={user.id}>{user.name}</li>
+      ))}
     </ul>
   );
 }
 ```
 
-## 🏗️ Container Builder API
+## Dynamic Modules
+
+Use `forRoot()` to pass runtime configuration:
 
 ```typescript
-// Full configuration
-Container.configure()
-  .withModule(AppModule)
-  .withLogLevel("debug")
-  .withDefaultScope("Singleton")
-  .build();
+import { Module, type DynamicModule } from '@abdokouta/ts-container';
 
-// With config object
-Container.configure()
-  .withModule(AppModule)
-  .withConfig({ logLevel: "debug", defaultScope: "Singleton" })
-  .build();
+const CACHE_CONFIG = Symbol('CACHE_CONFIG');
 
-// With defaults
-Container.configure().withModule(AppModule).withDefaults().build();
+@Module({})
+export class CacheModule {
+  static forRoot(config: CacheConfig): DynamicModule {
+    return {
+      module: CacheModule,
+      global: true, // available to all modules
+      providers: [
+        { provide: CACHE_CONFIG, useValue: config },
+        CacheManager,
+      ],
+      exports: [CacheManager],
+    };
+  }
+}
+
+// In AppModule:
+@Module({
+  imports: [
+    CacheModule.forRoot({ default: 'memory', stores: { ... } }),
+  ],
+})
+export class AppModule {}
 ```
 
-## 🌍 Global Modules
+## Global Modules
+
+Use `@Global()` to make a module's exports available everywhere:
 
 ```typescript
 import { Module, Global } from "@abdokouta/ts-container";
@@ -141,67 +190,148 @@ import { Module, Global } from "@abdokouta/ts-container";
 @Global()
 @Module({
   providers: [LoggerService],
+  exports: [LoggerService],
 })
 export class LoggerModule {}
 ```
 
-## 🔄 Dynamic Modules
+Now `LoggerService` can be injected in any module without importing `LoggerModule`.
+
+## Lifecycle Hooks
+
+Services can implement `OnModuleInit` and `OnModuleDestroy`:
 
 ```typescript
-import { Module, forRoot, type DynamicModule } from "@abdokouta/ts-container";
+import {
+  Injectable,
+  type OnModuleInit,
+  type OnModuleDestroy,
+} from "@abdokouta/ts-container";
 
-@Module({})
-export class ConfigModule {
-  static forRoot(config: AppConfig): DynamicModule {
-    return forRoot(ConfigModule, {
-      providers: [{ provide: CONFIG, useValue: config }],
-      exports: [ConfigService],
-    });
+@Injectable()
+export class DatabaseService implements OnModuleInit, OnModuleDestroy {
+  private connection: Connection | null = null;
+
+  // Called after all providers are instantiated
+  async onModuleInit() {
+    this.connection = await createConnection();
+    console.log("Database connected");
+  }
+
+  // Called when app.close() is invoked
+  async onModuleDestroy() {
+    await this.connection?.close();
+    console.log("Database disconnected");
   }
 }
 ```
 
-## 📋 Provider Types
+## Provider Types
 
-| Type          | Example                                                                  |
-| ------------- | ------------------------------------------------------------------------ |
-| Class         | `UserService` or `{ provide: USER, useClass: UserService }`              |
-| Value         | `{ provide: API_URL, useValue: "https://api.example.com" }`              |
-| Factory       | `{ provide: CONNECTION, useFactory: (ctx) => () => createConnection() }` |
-| Async Factory | `{ provide: DB, useAsyncFactory: () => async () => await connect() }`    |
-| Alias         | `{ provide: "Logger", useExisting: LoggerService }`                      |
+| Type              | Syntax                                                        | Description                      |
+| ----------------- | ------------------------------------------------------------- | -------------------------------- |
+| Class (shorthand) | `UserService`                                                 | Bind class to itself             |
+| Class             | `{ provide: TOKEN, useClass: UserService }`                   | Bind token to a class            |
+| Value             | `{ provide: TOKEN, useValue: { ... } }`                       | Bind token to a value            |
+| Factory           | `{ provide: TOKEN, useFactory: (dep) => ..., inject: [Dep] }` | Bind token to a factory function |
+| Async Factory     | `{ provide: TOKEN, useFactory: async () => await ... }`       | Factory that returns a Promise   |
+| Alias             | `{ provide: TOKEN, useExisting: OtherToken }`                 | Alias one token to another       |
 
-## 🎣 React Hooks
+## Scopes
 
-| Hook                  | Description           |
-| --------------------- | --------------------- |
-| `useInject<T>(token)` | Inject a service      |
-| `useContainer()`      | Get container context |
-| `useModule(module)`   | Get module container  |
+```typescript
+import { Injectable, Scope } from "@abdokouta/ts-container";
 
-## 🔧 Decorators
+// Singleton (default) — one instance shared everywhere
+@Injectable()
+class ConfigService {}
 
-| Decorator             | Description              |
-| --------------------- | ------------------------ |
-| `@Module()`           | Define a module          |
-| `@Global()`           | Make module global       |
-| `@Injectable()`       | Mark class as injectable |
-| `@Inject(token)`      | Inject dependency        |
-| `@MultiInject(token)` | Inject all with token    |
-| `@Optional()`         | Optional dependency      |
+// Transient — new instance per injection
+@Injectable({ scope: Scope.TRANSIENT })
+class RequestLogger {}
+```
 
-## 📚 Documentation
+## React Hooks
 
-- [Full Documentation](./packages/container/README.md)
-- [Examples](./examples/vite)
-- [API Reference](./packages/container/README.md#-decorators)
+| Hook                       | Package                         | Description                   |
+| -------------------------- | ------------------------------- | ----------------------------- |
+| `useInject(token)`         | `@abdokouta/ts-container-react` | Resolve a provider            |
+| `useOptionalInject(token)` | `@abdokouta/ts-container-react` | Resolve or return `undefined` |
+| `useContainer()`           | `@abdokouta/ts-container-react` | Access the raw resolver       |
 
-## 📄 License
+## Decorators
 
-MIT © [Abdo Kouta](https://github.com/abdokouta)
+| Decorator          | Description                                         |
+| ------------------ | --------------------------------------------------- |
+| `@Injectable()`    | Mark a class as a provider                          |
+| `@Inject(token)`   | Specify injection token for a parameter or property |
+| `@Optional()`      | Mark a dependency as optional                       |
+| `@Module({ ... })` | Define a module with providers, imports, exports    |
+| `@Global()`        | Make a module's exports available globally          |
+
+## ApplicationContext API
+
+```typescript
+const app = await ApplicationContext.create(AppModule);
+
+// Resolve a provider
+const service = app.get(UserService);
+const config = app.get<CacheConfig>(CACHE_CONFIG);
+
+// Optional resolution
+const analytics = app.getOptional(AnalyticsService); // undefined if not found
+
+// Check existence
+app.has(UserService); // true
+
+// Module-scoped resolution
+app.select(CacheModule, CacheManager);
+
+// Graceful shutdown (calls OnModuleDestroy on all providers)
+await app.close();
+```
+
+## Project Structure
+
+```
+packages/
+  container/     # @abdokouta/ts-container — core DI engine
+    src/
+      constants.ts
+      decorators/    # @Injectable, @Inject, @Module, @Global, @Optional
+      interfaces/    # Type, InjectionToken, Provider, DynamicModule, etc.
+      injector/      # Container, Injector, Scanner, Module, InstanceWrapper
+      utils/         # forwardRef
+  react/         # @abdokouta/ts-container-react — React bindings
+    src/
+      contexts/      # ContainerContext
+      hooks/         # useInject, useOptionalInject, useContainer
+      providers/     # ContainerProvider component
+      interfaces/    # ContainerProviderProps
+  application/   # @abdokouta/ts-application — bootstrap layer
+    src/
+      application-context.ts
+      interfaces/    # IApplicationContext
+examples/
+  vite/          # Full working example with all patterns
+```
+
+## How It Works
+
+The bootstrap sequence has three phases:
+
+1. **Scan** — `DependenciesScanner` walks the module tree (starting from your root module), reads `@Module()` metadata, and registers all modules, providers, imports, and exports into the `NestContainer`.
+
+2. **Instantiate** — `InstanceLoader` iterates all modules and uses the `Injector` to resolve each provider. The injector reads `design:paramtypes` (from TypeScript) and `self:paramtypes` (from `@Inject()`) to determine constructor dependencies, resolves them recursively, and calls `new Class(...deps)`.
+
+3. **Lifecycle** — After all providers are instantiated, `onModuleInit()` is called on every provider that implements it. On shutdown, `onModuleDestroy()` is called in reverse order.
+
+## License
+
+MIT
 
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://github.com/abdokouta">Abdo Kouta</a>
+  Made with ❤️ by <a href="https://github.com/abdokouta">Abdo Kouta</a> at <a href="https://github.com/pixielity-inc">Pixielity</a>
 </p>

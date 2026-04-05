@@ -2,15 +2,13 @@
 # Publish all packages to npm
 # =============================================================================
 #
-# Publishes @abdokouta/ts-container, @abdokouta/ts-container-react,
-# and @abdokouta/ts-application to npm in dependency order.
+# All three packages share the same version (tightly coupled).
 #
 # Triggered by:
-#   - Pushing a version tag (v*)
-#   - Manual workflow dispatch
+#   - Pushing a version tag (v*) — extracts version from the tag
+#   - Manual workflow dispatch — publishes whatever version is in package.json
 #
-# Each package is published independently. If a package version already
-# exists on npm, the publish step is skipped (no error).
+# The tag version is written into all three package.json files before publish.
 # =============================================================================
 
 name: Publish to npm
@@ -45,6 +43,26 @@ jobs:
       - name: 📥 Install dependencies
         run: pnpm install --no-frozen-lockfile
 
+      # ─────────────────────────────────────────────────────────────────────
+      # Sync version from git tag into all package.json files
+      # If triggered manually (no tag), skip this step — use existing versions
+      # ─────────────────────────────────────────────────────────────────────
+      - name: 🏷️ Sync version from tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "📦 Setting version to $VERSION across all packages"
+          for pkg in packages/container packages/react packages/application; do
+            node -e "
+              const fs = require('fs');
+              const path = './$pkg/package.json';
+              const pkg = JSON.parse(fs.readFileSync(path, 'utf8'));
+              pkg.version = '$VERSION';
+              fs.writeFileSync(path, JSON.stringify(pkg, null, 2) + '\n');
+              console.log('  ✅ ' + pkg.name + '@$VERSION');
+            "
+          done
+
       - name: 🔨 Build all packages
         run: pnpm build --filter="@abdokouta/*"
 
@@ -53,6 +71,8 @@ jobs:
       # 1. @abdokouta/ts-container (no deps)
       # 2. @abdokouta/ts-container-react (depends on ts-container)
       # 3. @abdokouta/ts-application (depends on ts-container)
+      #
+      # `|| true` skips already-published versions gracefully
       # ─────────────────────────────────────────────────────────────────────
 
       - name: 🚀 Publish @abdokouta/ts-container

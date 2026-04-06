@@ -179,6 +179,7 @@ export class Injector {
     // Resolve each dependency
     const resolvedDeps = await Promise.all(
       deps.map(async (dep, index) => {
+        // Unresolvable type (undefined, null, or generic Object from erased interfaces)
         if (dep === undefined || dep === null || dep === Object) {
           if (optionalIndices.includes(index)) return undefined;
           throw new Error(
@@ -190,6 +191,7 @@ export class Injector {
         try {
           return await this.resolveDependency(dep, moduleRef);
         } catch (err) {
+          // If the dependency is optional and resolution fails, return undefined
           if (optionalIndices.includes(index)) return undefined;
           throw new Error(
             `Cannot resolve dependency '${this.getTokenName(dep)}' at index [${index}] of ${metatype.name}. ` +
@@ -335,16 +337,26 @@ export class Injector {
    * explicitly declared `self:paramtypes` (from @Inject decorators).
    * Explicit declarations override auto-detected types.
    *
+   * Also checks the prototype chain to handle cases where bundlers
+   * (SWC, esbuild) create wrapper classes during decoration — the
+   * parameter decorators may have stored metadata on the original
+   * class while the class decorator created a new reference.
+   *
    * @param type - The class to read metadata from
    * @returns Array of injection tokens, one per constructor parameter
    */
   private getConstructorDependencies(type: Type<any>): InjectionToken[] {
     // Auto-detected types from TypeScript's emitDecoratorMetadata
+    // Try the class itself first, then its prototype chain
     const paramTypes: any[] = [
-      ...(Reflect.getMetadata(PARAMTYPES_METADATA, type) || []),
+      ...(Reflect.getMetadata(PARAMTYPES_METADATA, type)
+        ?? Reflect.getOwnMetadata(PARAMTYPES_METADATA, type)
+        ?? []),
     ];
 
     // Explicit overrides from @Inject() decorators
+    // Check both the class and its prototype chain (handles SWC/esbuild
+    // wrapper classes where param decorators ran on the original class)
     const selfDeclared: Array<{ index: number; param: InjectionToken }> =
       Reflect.getMetadata(SELF_DECLARED_DEPS_METADATA, type) || [];
 
@@ -358,6 +370,9 @@ export class Injector {
 
   /**
    * Get the indices of optional constructor parameters.
+   *
+   * Checks both the class and its prototype chain for the same
+   * reason as getConstructorDependencies — bundler wrapper classes.
    */
   private getOptionalDependencies(type: Type<any>): number[] {
     return Reflect.getMetadata(OPTIONAL_DEPS_METADATA, type) || [];
